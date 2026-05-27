@@ -581,23 +581,6 @@
     /* loss progress table */
     .loss-row-good td:nth-child(2) { color: var(--normal); }
 
-    .milestone-divider {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      margin: 2.5rem 0 2rem;
-      font-size: .52rem;
-      letter-spacing: .22em;
-      text-transform: uppercase;
-      color: var(--muted);
-    }
-    .milestone-divider::before, .milestone-divider::after {
-      content: '';
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
     @media (max-width: 600px) {
       .compare       { grid-template-columns: 1fr; }
       .col-head.left { border-right: none; }
@@ -892,11 +875,12 @@ function buildClassSection(cfg, epochNum) {
   </div>`;
 }
 
-function buildParamsCard(epochNum, data) {
+function buildParamsCard(epochNum, data, label) {
   const fmt = v => v != null ? v : '—';
+  const title = label || `Parametry treningu · Epoka ${epochNum} / 200`;
   return `
   <div class="params-card">
-    <div class="card-label">Parametry treningu · Epoka ${epochNum} / 200</div>
+    <div class="card-label">${title}</div>
     <div class="params-grid">
       <div class="param"><div class="param-key">Epoka</div><div class="param-val accent">${epochNum} / 200</div></div>
       <div class="param"><div class="param-key">loss_D</div><div class="param-val">${fmt(data.loss_D)}</div></div>
@@ -965,24 +949,21 @@ function showLatest() {
 
   const prevEp = Object.keys(_manifest.epochs).map(Number)
     .sort((a, b) => b - a).find(n => n < ep) || null;
+  const prevCard = prevEp ? buildParamsCard(prevEp, _manifest.epochs[String(prevEp)], `Poprzedni milestone · Epoka ${prevEp} / 200`) : '';
 
-  const currentSections = hasSamples
+  const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
     : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
          Próbki audio dla tej epoki nie zostały jeszcze zapisane — pojawią się po epoce
          ${Math.ceil(ep / 5) * 5}.
        </p>`;
 
-  const prevSection = prevEp ? `
-    <div class="milestone-divider">Poprzedni milestone · Epoka ${prevEp}</div>
-    ${CLASS_CFG.map(cfg => buildClassSection(cfg, prevEp)).join('')}` : '';
-
   document.getElementById('epoch-view').innerHTML = `
 <main>
   <div class="epoch-chip"><span class="dot"></span>Epoka ${ep} / 200</div>
   ${buildParamsCard(ep, hasSamples ? _manifest.epochs[String(ep)] : data)}
-  ${currentSections}
-  ${prevSection}
+  ${prevCard}
+  ${sections}
 </main>`;
   setActive(true, ep);
   window.scrollTo({ top: 0, behavior: 'smooth' });
