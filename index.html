@@ -581,6 +581,23 @@
     /* loss progress table */
     .loss-row-good td:nth-child(2) { color: var(--normal); }
 
+    .milestone-divider {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin: 2.5rem 0 2rem;
+      font-size: .52rem;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .milestone-divider::before, .milestone-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
     @media (max-width: 600px) {
       .compare       { grid-template-columns: 1fr; }
       .col-head.left { border-right: none; }
@@ -942,11 +959,33 @@ function showMilestone(epochNum) {
 }
 
 function showLatest() {
-  const ep   = _manifest.latest_epoch;
+  const ep = _manifest.latest_epoch;
   const data = _manifest.latest_losses;
   const hasSamples = !!_manifest.epochs[String(ep)];
-  renderEpoch(ep, hasSamples ? _manifest.epochs[String(ep)] : data, hasSamples);
+
+  const prevEp = Object.keys(_manifest.epochs).map(Number)
+    .sort((a, b) => b - a).find(n => n < ep) || null;
+
+  const currentSections = hasSamples
+    ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
+    : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
+         Próbki audio dla tej epoki nie zostały jeszcze zapisane — pojawią się po epoce
+         ${Math.ceil(ep / 5) * 5}.
+       </p>`;
+
+  const prevSection = prevEp ? `
+    <div class="milestone-divider">Poprzedni milestone · Epoka ${prevEp}</div>
+    ${CLASS_CFG.map(cfg => buildClassSection(cfg, prevEp)).join('')}` : '';
+
+  document.getElementById('epoch-view').innerHTML = `
+<main>
+  <div class="epoch-chip"><span class="dot"></span>Epoka ${ep} / 200</div>
+  ${buildParamsCard(ep, hasSamples ? _manifest.epochs[String(ep)] : data)}
+  ${currentSections}
+  ${prevSection}
+</main>`;
   setActive(true, ep);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function buildNav() {
