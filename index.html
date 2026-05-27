@@ -947,9 +947,8 @@ function showLatest() {
   const data = _manifest.latest_losses;
   const hasSamples = !!_manifest.epochs[String(ep)];
 
-  const prevEp = Object.keys(_manifest.epochs).map(Number)
-    .sort((a, b) => b - a).find(n => n < ep) || null;
-  const prevCard = prevEp ? buildParamsCard(prevEp, _manifest.epochs[String(prevEp)], `Poprzedni milestone · Epoka ${prevEp} / 200`) : '';
+  const prevEp = _manifest.prev_epoch || null;
+  const prevCard = prevEp ? buildParamsCard(prevEp, _manifest.prev_losses, `Poprzednia epoka · ${prevEp} / 200`) : '';
 
   const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
