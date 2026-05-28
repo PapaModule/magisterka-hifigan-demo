@@ -1,13 +1,13 @@
 {
   "latest_epoch": 16,
-  "prev_epoch": 16,
+  "prev_epoch": 15,
   "prev_losses": {
-    "loss_D": "1.9757",
-    "loss_G": "34.3426",
-    "adv": "10.9586",
-    "fm": "11.6920",
-    "sd": "0.6671",
-    "time_s": 4066
+    "loss_D": "2.1175",
+    "loss_G": "33.3682",
+    "adv": "10.7485",
+    "fm": "11.3098",
+    "sd": "0.6578",
+    "time_s": 4243
   },
   "latest_losses": {
     "loss_D": "1.9757",
