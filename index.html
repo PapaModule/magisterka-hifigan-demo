@@ -403,6 +403,68 @@
     .sec-extra audio        { accent-color: var(--extra); }
     .sec-extra .cell.gen    { border-left: 2px solid rgba(192,132,252,.2); }
 
+    /* ── Experiment selector ────────────────────────── */
+    .exp-selector {
+      display: flex;
+      gap: .3rem;
+      align-items: center;
+      margin-right: .75rem;
+      flex-shrink: 0;
+    }
+
+    .exp-sel-btn {
+      padding: .25rem .65rem;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: none;
+      color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .58rem;
+      font-weight: 400;
+      letter-spacing: .04em;
+      cursor: pointer;
+      transition: all .18s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .exp-sel-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+
+    .exp-sel-btn.active-exp3 {
+      color: var(--murmur);
+      border-color: rgba(251,146,60,.4);
+      background: rgba(251,146,60,.07);
+    }
+
+    .exp-sel-btn.active-exp4 {
+      color: var(--normal);
+      border-color: rgba(74,222,128,.4);
+      background: rgba(74,222,128,.07);
+    }
+
+    .exp-sel-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: .3rem;
+      vertical-align: middle;
+    }
+
+    /* ── Exp banner ─────────────────────────────────── */
+    .exp-banner {
+      padding: .5rem 1.5rem;
+      font-size: .58rem;
+      letter-spacing: .05em;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+    }
+
+    .exp-banner.exp3 { background: rgba(251,146,60,.05); color: rgba(251,146,60,.7); }
+    .exp-banner.exp4 { background: rgba(74,222,128,.04); color: rgba(74,222,128,.7); }
+    .exp-banner strong { font-weight: 500; }
+
     /* ── Footer ──────────────────────────────────────── */
     footer {
       text-align: center;
@@ -726,18 +788,38 @@
       <div class="exp-header">
         <span class="exp-num">04</span>
         <span class="exp-title">cHiFi-GAN 4 kHz + SpectrogramDiscriminator</span>
-        <span class="exp-status status-active">Aktualny · epoka 7+/200</span>
+        <span class="exp-status status-done">Zakończony · E50</span>
       </div>
       <div class="exp-body">
-        Uruchomiony 25 maja 2026. Epoki 1–3 trwały ~3 godziny z powodu kompilacji shaderów Metal
-        (jednorazowe zjawisko). Od epoki 4 stabilny czas: <strong>~62 minuty/epokę</strong>.<br><br>
-        <strong>Dodatkowe poprawki MPS (Apple Silicon M-series):</strong>
+        Uruchomiony 25 maja 2026, zakończony 29 maja 2026 po 50 epokach (~50 godzin).<br><br>
+        <strong>Wyniki:</strong> Model konwergował zdrowo do E35 (fm: 2.7 → 12.8). Od epoki 35
+        nastąpiło <strong>plateau</strong> — fm oscylowało 12.62–12.85 przez kolejne 15 epok bez postępu.<br><br>
+        <strong>Zidentyfikowana przyczyna:</strong> Klasa <em>normal</em> w datasecie pochodzi z trzech
+        źródeł o bardzo różnych amplitudach (spread ~23 dB w PhysioNet 2016). Generator nauczył się tej
+        niespójności — wygenerowane próbki normal miały rozrzut 14.7 dB (normal_01: −17.9 dBFS,
+        normal_02: −32.6 dBFS). Klasy murmur i extrastole były spójne (spread 2.5 dB i 0.3 dB).
         <ul>
-          <li><code>spectral_norm</code> na pierwszym MSD → deadlock Metal → zamieniono na <code>weight_norm</code></li>
-          <li><code>F.pad(mode='reflect')</code> w PeriodDiscriminator → hang MPS → zmieniono na <code>mode='replicate'</code></li>
-          <li>Podwójne wywołania MPD/MSD w kroku generatora → OOM → jedno wywołanie z rozpakowaniem obu wyników</li>
-          <li><code>torch.mps.empty_cache()</code> po każdym batchu — zapobiega kumulowaniu pamięci Metal</li>
+          <li>Poprawki MPS: <code>weight_norm</code> zamiast <code>spectral_norm</code>, <code>mode='replicate'</code> zamiast <code>'reflect'</code></li>
+          <li>Stały LR bez schedulera → brak mechanizmu wyjścia z równowagi</li>
         </ul>
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-header">
+        <span class="exp-num">05</span>
+        <span class="exp-title">cHiFi-GAN 4 kHz + normalizacja RMS + ReduceLROnPlateau</span>
+        <span class="exp-status status-active">Aktualny · w toku</span>
+      </div>
+      <div class="exp-body">
+        Uruchomiony 29 maja 2026. Identyczna architektura jak Eksperyment 4, dwie poprawki:<br><br>
+        <strong>1. Normalizacja amplitudy w preprocessingu:</strong> każdy 3-sekundowy segment
+        normalizowany do <strong>−20 dBFS RMS</strong> przed zapisem (<code>preprocess_norm.py</code>).
+        Eliminuje rozrzut amplitud między PhysioNet 2016, CirCor 2022 i Bentley — generator
+        nie traci pojemności na "decydowanie o głośności".<br><br>
+        <strong>2. Scheduler LR:</strong> <code>ReduceLROnPlateau(mode=max, patience=10, factor=0.5)</code>
+        monitoruje <em>feature matching loss</em>. Jeśli fm nie poprawi się przez 10 epok,
+        LR_G i LR_D są redukowane o połowę (min 1e-6) — automatyczne wyjście z potencjalnego plateau.
       </div>
     </div>
   </div>
@@ -818,6 +900,11 @@
 </footer>
 
 <script>
+let _manifest = null;
+let _currentExp = 'exp4';
+
+function getExp() { return _manifest.experiments[_currentExp]; }
+
 const REAL_FILES = {
   normal: [
     'normal_bentley_22025.wav', 'normal_bentley_22026.wav',
@@ -867,7 +954,8 @@ const CLASS_CFG = [
 ];
 
 function samplesDir(n) {
-  return `output_hifigan/samples/epoch_${String(n).padStart(4,'0')}`;
+  const base = _currentExp === 'exp3' ? 'output_hifigan' : 'output_hifigan_norm';
+  return `${base}/samples/epoch_${String(n).padStart(4,'0')}`;
 }
 
 function buildClassSection(cfg, epochNum) {
@@ -904,7 +992,14 @@ function buildClassSection(cfg, epochNum) {
 
 function buildParamsCard(epochNum, data, label) {
   const fmt = v => v != null ? v : '—';
-  const title = label || `Parametry treningu · Epoka ${epochNum} / 200`;
+  const expLabel = _currentExp === 'exp3' ? 'Exp 3 · bez normalizacji' : 'Exp 4 · normalizacja RMS';
+  const title = label || `Parametry treningu · ${expLabel} · Epoka ${epochNum} / 200`;
+  const normRow = _currentExp === 'exp4'
+    ? `<div class="param"><div class="param-key">Normalizacja RMS</div><div class="param-val accent">−20 dBFS</div></div>`
+    : '';
+  const lrRow = _currentExp === 'exp4'
+    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`
+    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`;
   return `
   <div class="params-card">
     <div class="card-label">${title}</div>
@@ -918,7 +1013,8 @@ function buildParamsCard(epochNum, data, label) {
       <div class="param"><div class="param-key">Sample Rate</div><div class="param-val">4 000 Hz</div></div>
       <div class="param"><div class="param-key">Długość klipu</div><div class="param-val">3 s (12 000 próbek)</div></div>
       <div class="param"><div class="param-key">Batch size</div><div class="param-val">8</div></div>
-      <div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4</div></div>
+      ${lrRow}
+      ${normRow}
       <div class="param"><div class="param-key">Próbki treningowe</div><div class="param-val">43 056</div></div>
       <div class="param"><div class="param-key">Architektura</div><div class="param-val">cHiFi-GAN</div></div>
     </div>
@@ -926,22 +1022,25 @@ function buildParamsCard(epochNum, data, label) {
 }
 
 function renderEpoch(epochNum, data, hasSamples) {
+  const exp = getExp();
   const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, epochNum)).join('')
     : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
          Próbki audio dla tej epoki nie zostały jeszcze zapisane — pojawią się po epoce
          ${Math.ceil(epochNum / 5) * 5}.
        </p>`;
+  const expColor = _currentExp === 'exp3' ? 'var(--murmur)' : 'var(--normal)';
   document.getElementById('epoch-view').innerHTML = `
 <main>
-  <div class="epoch-chip"><span class="dot"></span>Epoka ${epochNum} / 200</div>
+  <div class="epoch-chip" style="border-color:${expColor}33;color:${expColor};background:${expColor}0d">
+    <span class="dot" style="background:${expColor};box-shadow:0 0 6px ${expColor}"></span>
+    ${exp.label} · Epoka ${epochNum} / 200
+  </div>
   ${buildParamsCard(epochNum, data)}
   ${sections}
 </main>`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-let _manifest = null;
 
 function setActive(isLatest, epochNum) {
   document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn => {
@@ -965,18 +1064,30 @@ function showAbout() {
 }
 
 function showMilestone(epochNum) {
-  renderEpoch(epochNum, _manifest.epochs[String(epochNum)], true);
+  const exp = getExp();
+  renderEpoch(epochNum, exp.epochs[String(epochNum)], true);
   setActive(false, epochNum);
 }
 
 function showLatest() {
-  const ep = _manifest.latest_epoch;
-  const data = _manifest.latest_losses;
-  const hasSamples = !!_manifest.epochs[String(ep)];
+  const exp = getExp();
+  const ep = exp.latest_epoch;
+  const data = exp.latest_losses;
+  const hasSamples = !!exp.epochs[String(ep)];
 
-  const prevEp = _manifest.prev_epoch || null;
-  const prevCard = prevEp ? buildParamsCard(prevEp, _manifest.prev_losses, `Poprzednia epoka · ${prevEp} / 200`) : '';
+  const prevEp = exp.prev_epoch || null;
+  const prevCard = prevEp ? buildParamsCard(prevEp, exp.prev_losses, `Poprzednia epoka · ${prevEp} / 200`) : '';
 
+  if (!ep) {
+    document.getElementById('epoch-view').innerHTML = `
+<main><p style="font-size:.65rem;color:var(--muted);padding:2rem 0;letter-spacing:.06em;">
+  Trening jeszcze nie wysłał żadnej epoki. Wróć za chwilę.
+</p></main>`;
+    setActive(true, 0);
+    return;
+  }
+
+  const expColor = _currentExp === 'exp3' ? 'var(--murmur)' : 'var(--normal)';
   const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
     : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
@@ -986,8 +1097,11 @@ function showLatest() {
 
   document.getElementById('epoch-view').innerHTML = `
 <main>
-  <div class="epoch-chip"><span class="dot"></span>Epoka ${ep} / 200</div>
-  ${buildParamsCard(ep, hasSamples ? _manifest.epochs[String(ep)] : data)}
+  <div class="epoch-chip" style="border-color:${expColor}33;color:${expColor};background:${expColor}0d">
+    <span class="dot" style="background:${expColor};box-shadow:0 0 6px ${expColor}"></span>
+    ${exp.label} · Epoka ${ep} / 200
+  </div>
+  ${buildParamsCard(ep, hasSamples ? exp.epochs[String(ep)] : data)}
   ${prevCard}
   ${sections}
 </main>`;
@@ -995,11 +1109,43 @@ function showLatest() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+function switchExp(expKey) {
+  _currentExp = expKey;
+  buildNav();
+  buildLossHistory();
+  showLatest();
+}
+
 function buildNav() {
   const container = document.getElementById('nav-tabs');
   container.innerHTML = '';
 
-  // "O projekcie" — zawsze pierwszy
+  // Selektor eksperymentu
+  const sel = document.createElement('div');
+  sel.className = 'exp-selector';
+
+  const exp3btn = document.createElement('button');
+  exp3btn.className = 'exp-sel-btn' + (_currentExp === 'exp3' ? ' active-exp3' : '');
+  exp3btn.innerHTML = `<span class="exp-sel-dot" style="background:var(--murmur)"></span>Exp 3`;
+  exp3btn.title = 'Eksperyment 3 — bez normalizacji · zakończony E50';
+  exp3btn.onclick = () => switchExp('exp3');
+  sel.appendChild(exp3btn);
+
+  const exp4btn = document.createElement('button');
+  exp4btn.className = 'exp-sel-btn' + (_currentExp === 'exp4' ? ' active-exp4' : '');
+  exp4btn.innerHTML = `<span class="exp-sel-dot" style="background:var(--normal)"></span>Exp 4`;
+  exp4btn.title = 'Eksperyment 4 — normalizacja RMS · w toku';
+  exp4btn.onclick = () => switchExp('exp4');
+  sel.appendChild(exp4btn);
+
+  container.appendChild(sel);
+
+  // Separator
+  const div = document.createElement('div');
+  div.className = 'nav-divider';
+  container.appendChild(div);
+
+  // "O projekcie"
   const btnAbout = document.createElement('button');
   btnAbout.className = 'tab-btn tab-about';
   btnAbout.dataset.tab = 'about';
@@ -1007,7 +1153,8 @@ function buildNav() {
   btnAbout.onclick = () => showAbout();
   container.appendChild(btnAbout);
 
-  const milestones = Object.keys(_manifest.epochs).map(Number).sort((a, b) => a - b);
+  const exp = getExp();
+  const milestones = Object.keys(exp.epochs).map(Number).sort((a, b) => a - b);
 
   milestones.forEach(ep => {
     const btn = document.createElement('button');
@@ -1018,18 +1165,20 @@ function buildNav() {
     container.appendChild(btn);
   });
 
-  // "Najnowsze" — zawsze na końcu
-  const ep  = _manifest.latest_epoch;
+  // "Najnowsze"
+  const ep  = exp.latest_epoch || 0;
   const btn = document.createElement('button');
   btn.className = 'tab-btn tab-latest';
   btn.dataset.epoch = ep;
-  btn.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">E${ep}</span>`;
+  const latestLabel = ep > 0 ? `E${ep}` : '…';
+  btn.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
   btn.onclick = () => showLatest();
   container.appendChild(btn);
 }
 
 function buildLossHistory() {
-  const all = _manifest.all_epochs || {};
+  const exp = getExp();
+  const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
   const SLOW_CUTOFF = 3;
   const rows = epochs.map(ep => {
@@ -1054,6 +1203,9 @@ function buildLossHistory() {
 async function init() {
   const r = await fetch(`manifest.json?t=${Date.now()}`);
   _manifest = await r.json();
+  // Domyślnie pokaż aktywny eksperyment
+  const exp4 = _manifest.experiments.exp4;
+  _currentExp = (exp4 && exp4.latest_epoch > 0) ? 'exp4' : 'exp3';
   buildNav();
   buildLossHistory();
   showAbout();
