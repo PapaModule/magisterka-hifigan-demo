@@ -819,13 +819,46 @@
 
 <script>
 const REAL_FILES = {
-  normal:     ['normal_bentley_22025.wav', 'normal_bentley_22026.wav',
-               'normal_bentley_22027.wav', 'normal_bentley_22028.wav'],
-  murmur:     ['murmur_bentley_20648.wav',  'murmur_bentley_20649.wav',
-               'murmur_bentley_20650.wav',  'murmur_bentley_20651.wav'],
-  extrastole: ['extrastole_bentley_00000.wav', 'extrastole_bentley_00001.wav',
-               'extrastole_bentley_00002.wav', 'extrastole_bentley_00003.wav']
+  normal: [
+    'normal_bentley_22025.wav', 'normal_bentley_22026.wav',
+    'normal_bentley_22027.wav', 'normal_bentley_22028.wav',
+    'normal_p2022_05396.wav',   'normal_p2022_07825.wav',
+    'normal_p2022_11624.wav',   'normal_p2022_13060.wav',
+    'normal_p2022_13153.wav',   'normal_p2022_17699.wav',
+    'normal_p2022_18419.wav',   'normal_p2022_18942.wav',
+    'normal_p2022_19469.wav',   'normal_p2022_20700.wav',
+    'normal_p2022_20868.wav',   'normal_p2022_21047.wav',
+  ],
+  murmur: [
+    'murmur_bentley_20648.wav',    'murmur_bentley_20649.wav',
+    'murmur_bentley_20650.wav',    'murmur_bentley_20651.wav',
+    'murmur_p2016_t_00417.wav',    'murmur_p2016_t_03323.wav',
+    'murmur_p2016_t_03963.wav',    'murmur_p2016_t_05387.wav',
+    'murmur_p2016_t_05815.wav',    'murmur_p2016_t_06070.wav',
+    'murmur_p2016_t_10706.wav',    'murmur_p2016_t_13264.wav',
+    'murmur_p2016_t_16297.wav',    'murmur_p2022_18225.wav',
+    'murmur_p2022_19276.wav',      'murmur_p2022_19701.wav',
+  ],
+  extrastole: [
+    'extrastole_bentley_00000.wav', 'extrastole_bentley_00001.wav',
+    'extrastole_bentley_00002.wav', 'extrastole_bentley_00003.wav',
+    'extrastole_bentley_00006.wav', 'extrastole_bentley_00007.wav',
+    'extrastole_bentley_00012.wav', 'extrastole_bentley_00035.wav',
+    'extrastole_bentley_00036.wav', 'extrastole_bentley_00040.wav',
+    'extrastole_bentley_00044.wav', 'extrastole_bentley_00052.wav',
+    'extrastole_bentley_00056.wav', 'extrastole_bentley_00057.wav',
+    'extrastole_bentley_00058.wav', 'extrastole_bentley_00060.wav',
+  ],
 };
+
+function pickRandom(arr, n) {
+  const copy = arr.slice();
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy.slice(0, n);
+}
 
 const CLASS_CFG = [
   { key: 'normal',     title: 'Normal',     meta: '23 543 próbek treningowych', css: 'sec-normal'  },
@@ -839,7 +872,7 @@ function samplesDir(n) {
 
 function buildClassSection(cfg, epochNum) {
   const dir = samplesDir(epochNum);
-  const rows = REAL_FILES[cfg.key].map((real, i) => {
+  const rows = pickRandom(REAL_FILES[cfg.key], 4).map((real, i) => {
     const idx  = String(i + 1).padStart(2, '0');
     const gen  = `${cfg.key}_${idx}.wav`;
     const last = i === 3 ? ' last' : '';
