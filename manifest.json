@@ -495,22 +495,22 @@
       "label": "Eksperyment 4 \u2014 normalizacja RMS",
       "subtitle": "dataset_norm \u221220 dBFS \u00b7 ReduceLROnPlateau patience=10",
       "status": "training",
-      "latest_epoch": 28,
-      "prev_epoch": 27,
+      "latest_epoch": 29,
+      "prev_epoch": 28,
       "prev_losses": {
-        "loss_D": "1.6207",
-        "loss_G": "36.3960",
-        "adv": "11.4902",
-        "fm": "12.4529",
-        "sd": "0.7005",
-        "time_s": 3719
-      },
-      "latest_losses": {
         "loss_D": "1.7019",
         "loss_G": "36.4225",
         "adv": "11.3641",
         "fm": "12.5292",
         "sd": "0.6854",
+        "time_s": 3720
+      },
+      "latest_losses": {
+        "loss_D": "1.5016",
+        "loss_G": "37.1508",
+        "adv": "11.7199",
+        "fm": "12.7155",
+        "sd": "0.7217",
         "time_s": 3720
       },
       "epochs": {
@@ -778,6 +778,14 @@
           "adv": "11.3641",
           "fm": "12.5292",
           "sd": "0.6854",
+          "time_s": 3720
+        },
+        "29": {
+          "loss_D": "1.5016",
+          "loss_G": "37.1508",
+          "adv": "11.7199",
+          "fm": "12.7155",
+          "sd": "0.7217",
           "time_s": 3720
         }
       }
