@@ -495,23 +495,23 @@
       "label": "Eksperyment 4 \u2014 normalizacja RMS",
       "subtitle": "dataset_norm \u221220 dBFS \u00b7 ReduceLROnPlateau patience=10",
       "status": "training",
-      "latest_epoch": 14,
-      "prev_epoch": 13,
+      "latest_epoch": 15,
+      "prev_epoch": 14,
       "prev_losses": {
-        "loss_D": "2.0349",
-        "loss_G": "33.6379",
-        "adv": "10.8412",
-        "fm": "11.3984",
-        "sd": "0.6496",
-        "time_s": 3637
-      },
-      "latest_losses": {
         "loss_D": "2.0160",
         "loss_G": "33.8173",
         "adv": "10.8825",
         "fm": "11.4674",
         "sd": "0.6564",
         "time_s": 3696
+      },
+      "latest_losses": {
+        "loss_D": "1.9751",
+        "loss_G": "33.9405",
+        "adv": "10.9481",
+        "fm": "11.4962",
+        "sd": "0.6675",
+        "time_s": 3722
       },
       "epochs": {
         "5": {
@@ -529,6 +529,14 @@
           "fm": "10.7915",
           "sd": "0.6536",
           "time_s": 3686
+        },
+        "15": {
+          "loss_D": "1.9751",
+          "loss_G": "33.9405",
+          "adv": "10.9481",
+          "fm": "11.4962",
+          "sd": "0.6675",
+          "time_s": 3722
         }
       },
       "all_epochs": {
@@ -643,6 +651,14 @@
           "fm": "11.4674",
           "sd": "0.6564",
           "time_s": 3696
+        },
+        "15": {
+          "loss_D": "1.9751",
+          "loss_G": "33.9405",
+          "adv": "10.9481",
+          "fm": "11.4962",
+          "sd": "0.6675",
+          "time_s": 3722
         }
       }
     }
