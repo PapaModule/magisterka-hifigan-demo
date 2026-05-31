@@ -866,8 +866,8 @@
       </tbody>
     </table>
     <p class="about-p">Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy malejącym <strong>loss_D</strong>
-    świadczą o zdrowej dynamice GAN — dyskryminator nie dominuje.<br>
-    * Dotyczy Exp 4: epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
+    świadczą o zdrowej dynamice GAN — dyskryminator nie dominuje.</p>
+    <p class="about-p" id="slow-epochs-note">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
   </div>
 
   <!-- Ewaluacja -->
@@ -1200,6 +1200,8 @@ function buildLossHistory() {
   }).join('');
   const tbody = document.getElementById('loss-history-body');
   if (tbody) tbody.innerHTML = rows || '<tr><td colspan="7" style="color:var(--muted)">Brak danych</td></tr>';
+  const note = document.getElementById('slow-epochs-note');
+  if (note) note.style.display = _currentExp === 'exp4' ? '' : 'none';
 }
 
 async function init() {
