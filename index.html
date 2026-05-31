@@ -1181,20 +1181,17 @@ function buildLossHistory() {
   const exp = getExp();
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
-  const SLOW_CUTOFF = 3;
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
     const h = Math.floor(mins / 60);
     const m = mins % 60;
     const timeStr = h > 0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m`;
-    const slow = ep <= SLOW_CUTOFF ? ' class="muted"' : '';
-    const note = ep <= SLOW_CUTOFF ? ' *' : '';
     return `<tr>
       <td>${ep}</td>
       <td>${d.loss_D}</td><td>${d.loss_G}</td>
       <td>${d.adv}</td><td>${d.fm}</td><td>${d.sd}</td>
-      <td${slow}>${timeStr}${note}</td>
+      <td>${timeStr}</td>
     </tr>`;
   }).join('');
   const tbody = document.getElementById('loss-history-body');
