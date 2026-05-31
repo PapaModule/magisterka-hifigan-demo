@@ -866,7 +866,8 @@
       </tbody>
     </table>
     <p class="about-p">Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy malejącym <strong>loss_D</strong>
-    świadczą o zdrowej dynamice GAN — dyskryminator nie dominuje.</p>
+    świadczą o zdrowej dynamice GAN — dyskryminator nie dominuje.<br>
+    * Dotyczy Exp 4: epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
   </div>
 
   <!-- Ewaluacja -->
@@ -1181,17 +1182,20 @@ function buildLossHistory() {
   const exp = getExp();
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
+  const SLOW_CUTOFF = _currentExp === 'exp4' ? 3 : 0;
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
     const h = Math.floor(mins / 60);
     const m = mins % 60;
     const timeStr = h > 0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m`;
+    const slow = ep <= SLOW_CUTOFF ? ' class="muted"' : '';
+    const note = ep <= SLOW_CUTOFF ? ' *' : '';
     return `<tr>
       <td>${ep}</td>
       <td>${d.loss_D}</td><td>${d.loss_G}</td>
       <td>${d.adv}</td><td>${d.fm}</td><td>${d.sd}</td>
-      <td>${timeStr}</td>
+      <td${slow}>${timeStr}${note}</td>
     </tr>`;
   }).join('');
   const tbody = document.getElementById('loss-history-body');
