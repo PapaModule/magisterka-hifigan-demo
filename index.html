@@ -821,7 +821,9 @@
         monitoruje <em>feature matching loss</em>. Jeśli fm nie poprawi się przez 10 epok,
         LR_G i LR_D są redukowane o połowę (min 1e-6) — automatyczne wyjście z potencjalnego plateau.<br><br>
         <strong>Scheduler uruchomiony po E44</strong> (fm oscylowało 12.61–12.87 przez 11 epok bez nowego rekordu):
-        LR_G: 2e-4 → 1e-4, LR_D: 1e-4 → 5e-5. Pierwsza epoka po zmianie (E45): fm = 12.94 — nowe maksimum.
+        LR_G: 2e-4 → 1e-4, LR_D: 1e-4 → 5e-5. Pierwsza epoka po zmianie (E45): fm = 12.94 — nowe maksimum.<br><br>
+        <strong>Scheduler uruchomiony po E59</strong> (fm oscylowało 13.09–13.22 przez 11 epok bez nowego rekordu, max E48 = 13.22):
+        LR_G: 1e-4 → 5e-5, LR_D: 5e-5 → 2.5e-5.
       </div>
     </div>
   </div>
