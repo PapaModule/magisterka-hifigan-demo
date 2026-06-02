@@ -436,6 +436,11 @@
       background: rgba(251,146,60,.07);
     }
 
+    .exp-sel-btn.active-exp6 {
+      background: rgba(96,165,250,.12);
+      border-color: rgba(96,165,250,.45);
+      color: #60a5fa;
+    }
     .exp-sel-btn.active-exp5 {
       color: var(--normal);
       border-color: rgba(74,222,128,.4);
@@ -463,6 +468,7 @@
 
     .exp-banner.exp4 { background: rgba(251,146,60,.05); color: rgba(251,146,60,.7); }
     .exp-banner.exp5 { background: rgba(74,222,128,.04); color: rgba(74,222,128,.7); }
+    .exp-banner.exp6 { background: rgba(96,165,250,.04); color: rgba(96,165,250,.7); }
     .exp-banner strong { font-weight: 500; }
 
     /* ── Footer ──────────────────────────────────────── */
@@ -810,7 +816,7 @@
       <div class="exp-header">
         <span class="exp-num">05</span>
         <span class="exp-title">cHiFi-GAN 4 kHz + normalizacja RMS + ReduceLROnPlateau</span>
-        <span class="exp-status status-active">Aktualny · w toku</span>
+        <span class="exp-status status-done">Zakończony · E93</span>
       </div>
       <div class="exp-body">
         Uruchomiony 29 maja 2026. Identyczna architektura jak Eksperyment 4, dwie poprawki:<br><br>
@@ -827,6 +833,29 @@
         LR_G: 1e-4 → 5e-5, LR_D: 5e-5 → 2.5e-5.<br><br>
         <strong>Scheduler uruchomiony po E79</strong> (fm oscylowało 13.22–13.42 przez 11 epok bez nowego rekordu, max E68 = 13.42):
         LR_G: 5e-5 → 2.5e-5, LR_D: 2.5e-5 → 1.25e-5. E83: fm = 13.49 — nowe maksimum.
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-header">
+        <span class="exp-num">06</span>
+        <span class="exp-title">cHiFi-GAN 4 kHz + filtr LP 800 Hz + normalizacja RMS + ReduceLROnPlateau</span>
+        <span class="exp-status status-active">Aktualny · w toku</span>
+      </div>
+      <div class="exp-body">
+        Uruchomiony 2 czerwca 2026. Identyczna architektura jak Eksperyment 5, zmiana w preprocessingu:<br><br>
+        <strong>Analiza problemu Exp 5:</strong> Analiza SNR datasetu wykazała medianę SNR = −2,7 dB —
+        energia w paśmie 800–2000 Hz była silniejsza niż energia użyteczna 0–800 Hz.
+        Normalizacja RMS wzmacniała szum razem z sygnałem serca. Generator uczył się tej
+        charakterystyki i odtwarzał szum w generowanych próbkach (szczególnie klasa <em>normal</em>).<br><br>
+        <strong>Poprawka — filtr dolnoprzepustowy przed normalizacją:</strong> każdy segment filtrowany
+        filtrem Butterwortha 6. rzędu (f<sub>c</sub> = 800 Hz) <em>przed</em> obliczeniem RMS i normalizacją.
+        Dźwięki serca mają energię klinicznie istotną do ~800 Hz (S1/S2: 10–400 Hz, szmery: do 800 Hz).
+        Normalizacja RMS obliczana na przefiltrowanym sygnale — odzwierciedla energię uderzeń serca, nie szumu.<br><br>
+        <strong>Dane:</strong> <code>dataset_exp6/</code> — 43 056 klipów (identyczna liczba jak Exp 5),
+        każdy przefiltrowany LP 800 Hz i znormalizowany do −20 dBFS.<br><br>
+        <strong>Parametry startowe:</strong> LR_G = 2e-4, LR_D = 1e-4 (bazowe, bez wpływu schedulera).
+        ReduceLROnPlateau (patience=10, factor=0.5) — identycznie jak w Exp 5.
       </div>
     </div>
   </div>
@@ -962,7 +991,7 @@ const CLASS_CFG = [
 ];
 
 function samplesDir(n) {
-  const base = _currentExp === 'exp4' ? 'output_hifigan' : 'output_hifigan_norm';
+  const base = _currentExp === 'exp4' ? 'output_hifigan' : _currentExp === 'exp5' ? 'output_hifigan_norm' : 'output_hifigan_exp6';
   return `${base}/samples/epoch_${String(n).padStart(4,'0')}`;
 }
 
@@ -1000,14 +1029,16 @@ function buildClassSection(cfg, epochNum) {
 
 function buildParamsCard(epochNum, data, label) {
   const fmt = v => v != null ? v : '—';
-  const expLabel = _currentExp === 'exp4' ? 'Exp 4 · bez normalizacji' : 'Exp 5 · normalizacja RMS';
+  const expLabel = _currentExp === 'exp4' ? 'Exp 4 · bez normalizacji' : _currentExp === 'exp5' ? 'Exp 5 · normalizacja RMS' : 'Exp 6 · LP 800 Hz + normalizacja RMS';
   const title = label || `Parametry treningu · ${expLabel} · Epoka ${epochNum} / 200`;
   const normRow = _currentExp === 'exp5'
     ? `<div class="param"><div class="param-key">Normalizacja RMS</div><div class="param-val accent">−20 dBFS</div></div>`
+    : _currentExp === 'exp6'
+    ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 800 Hz → −20 dBFS RMS</div></div>`
     : '';
-  const lrRow = _currentExp === 'exp5'
-    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`
-    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`;
+  const lrRow = _currentExp === 'exp4'
+    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
+    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`;
   return `
   <div class="params-card">
     <div class="card-label">${title}</div>
@@ -1142,9 +1173,16 @@ function buildNav() {
   const exp5btn = document.createElement('button');
   exp5btn.className = 'exp-sel-btn' + (_currentExp === 'exp5' ? ' active-exp5' : '');
   exp5btn.innerHTML = `<span class="exp-sel-dot" style="background:var(--normal)"></span>Exp 5`;
-  exp5btn.title = 'Eksperyment 5 — normalizacja RMS · w toku';
+  exp5btn.title = 'Eksperyment 5 — normalizacja RMS · zakończony E93';
   exp5btn.onclick = () => switchExp('exp5');
   sel.appendChild(exp5btn);
+
+  const exp6btn = document.createElement('button');
+  exp6btn.className = 'exp-sel-btn' + (_currentExp === 'exp6' ? ' active-exp6' : '');
+  exp6btn.innerHTML = `<span class="exp-sel-dot" style="background:#60a5fa"></span>Exp 6`;
+  exp6btn.title = 'Eksperyment 6 — LP 800 Hz + normalizacja RMS · w toku';
+  exp6btn.onclick = () => switchExp('exp6');
+  sel.appendChild(exp6btn);
 
   container.appendChild(sel);
 
@@ -1189,7 +1227,7 @@ function buildLossHistory() {
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
   const SLOW_CUTOFF = _currentExp === 'exp4' ? 3 : 0;
-  const SCHEDULER_EPOCHS = _currentExp === 'exp5' ? [44, 59, 79] : [];
+  const SCHEDULER_EPOCHS = _currentExp === 'exp5' ? [44, 59, 79] : _currentExp === 'exp6' ? [] : [];
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
@@ -1211,15 +1249,16 @@ function buildLossHistory() {
   const note = document.getElementById('slow-epochs-note');
   if (note) note.style.display = _currentExp === 'exp4' ? '' : 'none';
   const schedNote = document.getElementById('scheduler-note');
-  if (schedNote) schedNote.style.display = _currentExp === 'exp5' ? '' : 'none';
+  if (schedNote) schedNote.style.display = (_currentExp === 'exp5' || _currentExp === 'exp6') ? '' : 'none';
 }
 
 async function init() {
   const r = await fetch(`manifest.json?t=${Date.now()}`);
   _manifest = await r.json();
   // Domyślnie pokaż aktywny eksperyment
+  const exp6 = _manifest.experiments.exp6;
   const exp5 = _manifest.experiments.exp5;
-  _currentExp = (exp5 && exp5.latest_epoch > 0) ? 'exp5' : 'exp4';
+  _currentExp = (exp6 && exp6.latest_epoch > 0) ? 'exp6' : (exp5 && exp5.latest_epoch > 0) ? 'exp5' : 'exp4';
   buildNav();
   buildLossHistory();
   showAbout();

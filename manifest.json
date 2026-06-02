@@ -1,9 +1,9 @@
 {
   "experiments": {
     "exp5": {
-      "label": "Eksperyment 5 \u2014 normalizacja RMS",
-      "subtitle": "dataset_norm \u221220 dBFS \u00b7 ReduceLROnPlateau patience=10",
-      "status": "training",
+      "label": "Eksperyment 5 — normalizacja RMS · zakończony E93",
+      "subtitle": "dataset_norm −20 dBFS · ReduceLROnPlateau patience=10",
+      "status": "done",
       "latest_epoch": 93,
       "prev_epoch": 92,
       "prev_losses": {
@@ -916,8 +916,8 @@
       }
     },
     "exp4": {
-      "label": "Eksperyment 4 \u2014 bez normalizacji",
-      "subtitle": "50 epok \u00b7 plateau od E35 \u00b7 fm max 12.85",
+      "label": "Eksperyment 4 — bez normalizacji",
+      "subtitle": "50 epok · plateau od E35 · fm max 12.85",
       "status": "completed",
       "latest_epoch": 50,
       "prev_epoch": 49,
@@ -1405,6 +1405,17 @@
           "time_s": 4069
         }
       }
+    },
+    "exp6": {
+      "label": "Eksperyment 6 — filtr LP 800 Hz + normalizacja RMS",
+      "subtitle": "dataset_exp6 · LP Butterworth 800 Hz · ReduceLROnPlateau patience=10",
+      "status": "training",
+      "latest_epoch": 0,
+      "prev_epoch": 0,
+      "prev_losses": null,
+      "latest_losses": null,
+      "epochs": {},
+      "all_epochs": {}
     }
   }
 }
