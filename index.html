@@ -855,7 +855,7 @@
         <strong>Dane:</strong> <code>dataset_exp6/</code> — 43 056 klipów (identyczna liczba jak Exp 5),
         każdy przefiltrowany LP 800 Hz i znormalizowany do −20 dBFS.<br><br>
         <strong>Parametry startowe:</strong> LR_G = 2e-4, LR_D = 1e-4 (bazowe, bez wpływu schedulera).
-        ReduceLROnPlateau (patience=10, factor=0.5) — identycznie jak w Exp 5.
+        ReduceLROnPlateau (patience=7 → scheduler odpala po 8 złych epokach, factor=0.5) — szybsza reakcja niż w Exp 5 (patience=10).
       </div>
     </div>
   </div>
