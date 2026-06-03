@@ -447,6 +447,12 @@
       border-color: rgba(192,132,252,.45);
       color: #c084fc;
     }
+
+    .exp-sel-btn.active-exp8 {
+      background: rgba(251,191,36,.12);
+      border-color: rgba(251,191,36,.45);
+      color: #fbbf24;
+    }
     .exp-sel-btn.active-exp5 {
       color: var(--normal);
       border-color: rgba(74,222,128,.4);
@@ -476,6 +482,7 @@
     .exp-banner.exp5 { background: rgba(74,222,128,.04); color: rgba(74,222,128,.7); }
     .exp-banner.exp6 { background: rgba(96,165,250,.04); color: rgba(96,165,250,.7); }
     .exp-banner.exp7 { background: rgba(192,132,252,.04); color: rgba(192,132,252,.7); }
+    .exp-banner.exp8 { background: rgba(251,191,36,.04);  color: rgba(251,191,36,.7); }
     .exp-banner strong { font-weight: 500; }
 
     /* ── Footer ──────────────────────────────────────── */
@@ -875,19 +882,34 @@
       <div class="exp-header">
         <span class="exp-num">07</span>
         <span class="exp-title">cHiFi-GAN 4 kHz + filtr LP 1200 Hz + normalizacja RMS + ReduceLROnPlateau</span>
-        <span class="exp-status status-active">Aktualny · w toku</span>
+        <span class="exp-status status-dropped">Zatrzymany · E10</span>
       </div>
       <div class="exp-body">
         Uruchomiony 3 czerwca 2026. Fix po mode collapse w Exp 6 — cutoff filtra LP podniesiony z 800 Hz do 1200 Hz.<br><br>
-        <strong>Uzasadnienie cutoffu 1200 Hz:</strong> Literatura kardiologiczna wskazuje, że szmery patologiczne
-        (szczególnie stenoza aortalna, niedomykalność mitralna) zawierają energie do 700–1000 Hz, a skrajne przypadki
-        do 1500 Hz. LP 800 Hz usuwał cechy różnicujące klasy normal/murmur. LP 1200 Hz zachowuje główne pasmo
-        różnicujące, jednocześnie odcinając szum tła powyżej 1200 Hz.<br><br>
-        <strong>Dane:</strong> <code>dataset_exp7/</code> — 43 056 klipów,
-        LP Butterworth rząd 6 (f<sub>c</sub> = 1200 Hz) → normalizacja do −20 dBFS RMS.<br><br>
-        <strong>Parametry:</strong> LR_G = 2e-4, LR_D = 1e-4.
-        ReduceLROnPlateau (patience=7 → scheduler odpala po 8 złych epokach, factor=0.5).
-        LAMBDA_SD = 2.0.
+        <strong>Wynik:</strong> Mode collapse normal↔murmur utrzymał się — korelacja Pearsona = <strong>0.9960</strong> przy E10.
+        fm = 13.87 przy E10 (powyżej rekordu Exp 5 = 13.68) — metryka ponownie nie wykryła kolapsu.<br><br>
+        <strong>Diagnoza:</strong> Zmiana LP z 800 Hz na 1200 Hz nie naprawiła problemu. Identyfikacja drugiej zmiennej:
+        Exp 6 i Exp 7 używały <strong>LAMBDA_SD = 2.0</strong>, podczas gdy działający Exp 5 używał <strong>LAMBDA_SD = 1.0</strong>.
+        Hipoteza: SpectrogramDiscriminator z podwojoną wagą dominuje gradient — generator uczy się dopasowywać
+        kształt widma LP (identyczny dla wszystkich klas) i ignoruje embedding klasy.<br><br>
+        <strong>Fix w Exp 8:</strong> LAMBDA_SD = 1.0 (powrót do wartości z Exp 5). Dataset: <code>dataset_exp6/</code> (LP 800 Hz).
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-header">
+        <span class="exp-num">08</span>
+        <span class="exp-title">cHiFi-GAN 4 kHz + filtr LP 800 Hz + LAMBDA_SD=1.0 + normalizacja RMS</span>
+        <span class="exp-status status-active">Aktualny · w toku</span>
+      </div>
+      <div class="exp-body">
+        Uruchomiony 3 czerwca 2026. Diagnoza mode collapse z Exp 6/7 — izolacja zmiennej LAMBDA_SD.<br><br>
+        <strong>Jedna zmiana względem Exp 7:</strong> LAMBDA_SD <strong>2.0 → 1.0</strong>
+        (powrót do wartości z Exp 5, który nie wykazał mode collapse).<br><br>
+        <strong>Dane:</strong> <code>dataset_exp6/</code> — 43 056 klipów, LP 800 Hz → −20 dBFS RMS
+        (bez ponownego preprocessingu).<br><br>
+        <strong>Oczekiwany wynik:</strong> Jeśli collapse zniknie → LAMBDA_SD był przyczyną.
+        Jeśli collapse wróci → LP filter jest przyczyną (konieczny powrót do braku LP jak w Exp 5).
       </div>
     </div>
   </div>
@@ -970,7 +992,7 @@
 
 <script>
 let _manifest = null;
-let _currentExp = 'exp7';
+let _currentExp = 'exp8';
 
 function getExp() { return _manifest.experiments[_currentExp]; }
 
@@ -1026,7 +1048,8 @@ function samplesDir(n) {
   const base = _currentExp === 'exp4' ? 'output_hifigan'
              : _currentExp === 'exp5' ? 'output_hifigan_norm'
              : _currentExp === 'exp6' ? 'output_hifigan_exp6'
-             : 'output_hifigan_exp7';
+             : _currentExp === 'exp7' ? 'output_hifigan_exp7'
+             : 'output_hifigan_exp8';
   return `${base}/samples/epoch_${String(n).padStart(4,'0')}`;
 }
 
@@ -1067,7 +1090,8 @@ function buildParamsCard(epochNum, data, label) {
   const expLabel = _currentExp === 'exp4' ? 'Exp 4 · bez normalizacji'
                  : _currentExp === 'exp5' ? 'Exp 5 · normalizacja RMS'
                  : _currentExp === 'exp6' ? 'Exp 6 · LP 800 Hz + normalizacja RMS'
-                 : 'Exp 7 · LP 1200 Hz + normalizacja RMS';
+                 : _currentExp === 'exp7' ? 'Exp 7 · LP 1200 Hz + normalizacja RMS'
+                 : 'Exp 8 · LP 800 Hz + LAMBDA_SD=1.0';
   const title = label || `Parametry treningu · ${expLabel} · Epoka ${epochNum} / 200`;
   const normRow = _currentExp === 'exp5'
     ? `<div class="param"><div class="param-key">Normalizacja RMS</div><div class="param-val accent">−20 dBFS</div></div>`
@@ -1075,6 +1099,8 @@ function buildParamsCard(epochNum, data, label) {
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 800 Hz → −20 dBFS RMS</div></div>`
     : _currentExp === 'exp7'
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 1200 Hz → −20 dBFS RMS</div></div>`
+    : _currentExp === 'exp8'
+    ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 800 Hz → −20 dBFS RMS</div></div>`
     : '';
   const lrRow = _currentExp === 'exp4'
     ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
@@ -1108,7 +1134,7 @@ function renderEpoch(epochNum, data, hasSamples) {
          Próbki audio dla tej epoki nie zostały jeszcze zapisane — pojawią się po epoce
          ${Math.ceil(epochNum / 5) * 5}.
        </p>`;
-  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp7' ? '#c084fc' : 'var(--normal)';
+  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : 'var(--normal)';
   document.getElementById('epoch-view').innerHTML = `
 <main>
   <div class="epoch-chip" style="border-color:${expColor}33;color:${expColor};background:${expColor}0d">
@@ -1166,7 +1192,7 @@ function showLatest() {
     return;
   }
 
-  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp7' ? '#c084fc' : 'var(--normal)';
+  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : 'var(--normal)';
   const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
     : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
@@ -1227,9 +1253,16 @@ function buildNav() {
   const exp7btn = document.createElement('button');
   exp7btn.className = 'exp-sel-btn' + (_currentExp === 'exp7' ? ' active-exp7' : '');
   exp7btn.innerHTML = `<span class="exp-sel-dot" style="background:#c084fc"></span>Exp 7`;
-  exp7btn.title = 'Eksperyment 7 — LP 1200 Hz + normalizacja RMS · aktywny';
+  exp7btn.title = 'Eksperyment 7 — LP 1200 Hz · zatrzymany E10';
   exp7btn.onclick = () => switchExp('exp7');
   sel.appendChild(exp7btn);
+
+  const exp8btn = document.createElement('button');
+  exp8btn.className = 'exp-sel-btn' + (_currentExp === 'exp8' ? ' active-exp8' : '');
+  exp8btn.innerHTML = `<span class="exp-sel-dot" style="background:#fbbf24"></span>Exp 8`;
+  exp8btn.title = 'Eksperyment 8 — LP 800 Hz + LAMBDA_SD=1.0 · aktywny';
+  exp8btn.onclick = () => switchExp('exp8');
+  sel.appendChild(exp8btn);
 
   container.appendChild(sel);
 
@@ -1303,10 +1336,12 @@ async function init() {
   const r = await fetch(`manifest.json?t=${Date.now()}`);
   _manifest = await r.json();
   // Domyślnie pokaż aktywny eksperyment
+  const exp8 = _manifest.experiments.exp8;
   const exp7 = _manifest.experiments.exp7;
   const exp6 = _manifest.experiments.exp6;
   const exp5 = _manifest.experiments.exp5;
-  _currentExp = (exp7 && exp7.latest_epoch > 0) ? 'exp7'
+  _currentExp = (exp8 && exp8.latest_epoch > 0) ? 'exp8'
+              : (exp7 && exp7.latest_epoch > 0) ? 'exp7'
               : (exp6 && exp6.latest_epoch > 0) ? 'exp6'
               : (exp5 && exp5.latest_epoch > 0) ? 'exp5'
               : 'exp4';
