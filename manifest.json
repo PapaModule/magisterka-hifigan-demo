@@ -1410,23 +1410,23 @@
       "label": "Eksperyment 7 \u2014 filtr LP 1200 Hz + normalizacja RMS",
       "subtitle": "dataset_exp7 \u00b7 LP Butterworth 1200 Hz \u00b7 LAMBDA_SD=2.0 \u00b7 patience=7",
       "status": "training",
-      "latest_epoch": 3,
-      "prev_epoch": 2,
+      "latest_epoch": 4,
+      "prev_epoch": 3,
       "prev_losses": {
-        "loss_D": "7.5908",
-        "loss_G": "21.7076",
-        "adv": "10.3174",
-        "fm": "5.6951",
-        "sd": "0.3161",
-        "time_s": 3748
-      },
-      "latest_losses": {
         "loss_D": "6.4583",
         "loss_G": "27.6092",
         "adv": "12.0486",
         "fm": "7.7803",
         "sd": "0.4015",
         "time_s": 3741
+      },
+      "latest_losses": {
+        "loss_D": "5.7420",
+        "loss_G": "32.2169",
+        "adv": "13.1896",
+        "fm": "9.5136",
+        "sd": "0.4400",
+        "time_s": 3753
       },
       "epochs": {},
       "all_epochs": {
@@ -1453,6 +1453,14 @@
           "fm": "7.7803",
           "sd": "0.4015",
           "time_s": 3741
+        },
+        "4": {
+          "loss_D": "5.7420",
+          "loss_G": "32.2169",
+          "adv": "13.1896",
+          "fm": "9.5136",
+          "sd": "0.4400",
+          "time_s": 3753
         }
       }
     },
