@@ -1410,17 +1410,9 @@
       "label": "Eksperyment 7 \u2014 filtr LP 1200 Hz + normalizacja RMS",
       "subtitle": "dataset_exp7 \u00b7 LP Butterworth 1200 Hz \u00b7 LAMBDA_SD=2.0 \u00b7 patience=7",
       "status": "training",
-      "latest_epoch": 4,
-      "prev_epoch": 3,
+      "latest_epoch": 5,
+      "prev_epoch": 4,
       "prev_losses": {
-        "loss_D": "6.4583",
-        "loss_G": "27.6092",
-        "adv": "12.0486",
-        "fm": "7.7803",
-        "sd": "0.4015",
-        "time_s": 3741
-      },
-      "latest_losses": {
         "loss_D": "5.7420",
         "loss_G": "32.2169",
         "adv": "13.1896",
@@ -1428,7 +1420,24 @@
         "sd": "0.4400",
         "time_s": 3753
       },
-      "epochs": {},
+      "latest_losses": {
+        "loss_D": "5.1978",
+        "loss_G": "35.5369",
+        "adv": "14.0473",
+        "fm": "10.7448",
+        "sd": "0.4773",
+        "time_s": 3756
+      },
+      "epochs": {
+        "5": {
+          "loss_D": "5.1978",
+          "loss_G": "35.5369",
+          "adv": "14.0473",
+          "fm": "10.7448",
+          "sd": "0.4773",
+          "time_s": 3756
+        }
+      },
       "all_epochs": {
         "1": {
           "loss_D": "8.1909",
@@ -1461,6 +1470,14 @@
           "fm": "9.5136",
           "sd": "0.4400",
           "time_s": 3753
+        },
+        "5": {
+          "loss_D": "5.1978",
+          "loss_G": "35.5369",
+          "adv": "14.0473",
+          "fm": "10.7448",
+          "sd": "0.4773",
+          "time_s": 3756
         }
       }
     },
