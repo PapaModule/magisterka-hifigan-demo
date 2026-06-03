@@ -1406,10 +1406,21 @@
         }
       }
     },
-    "exp6": {
-      "label": "Eksperyment 6 \u2014 filtr LP 800 Hz + normalizacja RMS",
-      "subtitle": "dataset_exp6 \u00b7 LP Butterworth 800 Hz \u00b7 ReduceLROnPlateau patience=10",
+    "exp7": {
+      "label": "Eksperyment 7 \u2014 filtr LP 1200 Hz + normalizacja RMS",
+      "subtitle": "dataset_exp7 \u00b7 LP Butterworth 1200 Hz \u00b7 LAMBDA_SD=2.0 \u00b7 patience=7",
       "status": "training",
+      "latest_epoch": 0,
+      "prev_epoch": null,
+      "prev_losses": null,
+      "latest_losses": null,
+      "epochs": {},
+      "all_epochs": {}
+    },
+    "exp6": {
+      "label": "Eksperyment 6 \u2014 filtr LP 800 Hz \u00b7 zatrzymany E15",
+      "subtitle": "dataset_exp6 \u00b7 LP 800 Hz \u00b7 mode collapse normal\u2194murmur (corr=0.9995)",
+      "status": "done",
       "latest_epoch": 15,
       "prev_epoch": 14,
       "prev_losses": {
