@@ -1410,23 +1410,23 @@
       "label": "Eksperyment 6 \u2014 filtr LP 800 Hz + normalizacja RMS",
       "subtitle": "dataset_exp6 \u00b7 LP Butterworth 800 Hz \u00b7 ReduceLROnPlateau patience=10",
       "status": "training",
-      "latest_epoch": 7,
-      "prev_epoch": 6,
+      "latest_epoch": 8,
+      "prev_epoch": 7,
       "prev_losses": {
-        "loss_D": "6.0605",
-        "loss_G": "31.9751",
-        "adv": "12.7648",
-        "fm": "9.6051",
-        "sd": "0.3864",
-        "time_s": 3951
-      },
-      "latest_losses": {
         "loss_D": "5.9614",
         "loss_G": "33.1664",
         "adv": "12.9413",
         "fm": "10.1126",
         "sd": "0.3882",
         "time_s": 3897
+      },
+      "latest_losses": {
+        "loss_D": "5.9741",
+        "loss_G": "34.0592",
+        "adv": "12.8785",
+        "fm": "10.5904",
+        "sd": "0.3796",
+        "time_s": 3677
       },
       "epochs": {
         "5": {
@@ -1494,6 +1494,14 @@
           "fm": "10.1126",
           "sd": "0.3882",
           "time_s": 3897
+        },
+        "8": {
+          "loss_D": "5.9741",
+          "loss_G": "34.0592",
+          "adv": "12.8785",
+          "fm": "10.5904",
+          "sd": "0.3796",
+          "time_s": 3677
         }
       }
     }
