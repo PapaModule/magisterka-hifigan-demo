@@ -482,7 +482,36 @@
 
     /* ── Responsive ─────────────────────────────────────── */
     @media (max-width: 640px) {
-      .sidebar { display: none; }
+      .page-layout { flex-direction: column; }
+
+      .sidebar {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        height: auto;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: .4rem .6rem;
+        overflow-x: auto;
+        scrollbar-width: none;
+        gap: .3rem;
+        background: var(--surface);
+      }
+      .sidebar::-webkit-scrollbar { display: none; }
+      .sidebar-label { display: none; }
+      .sidebar-exp {
+        flex-direction: row;
+        align-items: center;
+        white-space: nowrap;
+        flex-shrink: 0;
+        width: auto;
+        padding: .3rem .6rem;
+        margin-bottom: 0;
+      }
+      .sidebar-exp-info { display: none; }
+
       .compare { grid-template-columns: 1fr; }
       .col-head.left { border-right: none; }
       .cell.left { border-right: none; }
