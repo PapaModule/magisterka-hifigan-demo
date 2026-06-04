@@ -1704,23 +1704,23 @@
       "label": "Eksperyment 8 \u2014 filtr LP 800 Hz + LAMBDA_SD=1.0",
       "subtitle": "dataset_exp6 \u00b7 LP 800 Hz \u00b7 LAMBDA_SD=1.0 \u00b7 diagnoza mode collapse",
       "status": "training",
-      "latest_epoch": 3,
-      "prev_epoch": 2,
+      "latest_epoch": 4,
+      "prev_epoch": 3,
       "prev_losses": {
-        "loss_D": "4.7120",
-        "loss_G": "15.9415",
-        "adv": "6.9272",
-        "fm": "4.5071",
-        "sd": "0.3064",
-        "time_s": 3672
-      },
-      "latest_losses": {
         "loss_D": "3.9425",
         "loss_G": "19.7935",
         "adv": "8.0769",
         "fm": "5.8583",
         "sd": "0.4012",
         "time_s": 3673
+      },
+      "latest_losses": {
+        "loss_D": "3.5102",
+        "loss_G": "22.6474",
+        "adv": "8.7350",
+        "fm": "6.9562",
+        "sd": "0.4410",
+        "time_s": 4261
       },
       "epochs": {},
       "all_epochs": {
@@ -1747,6 +1747,14 @@
           "fm": "5.8583",
           "sd": "0.4012",
           "time_s": 3673
+        },
+        "4": {
+          "loss_D": "3.5102",
+          "loss_G": "22.6474",
+          "adv": "8.7350",
+          "fm": "6.9562",
+          "sd": "0.4410",
+          "time_s": 4261
         }
       }
     }
