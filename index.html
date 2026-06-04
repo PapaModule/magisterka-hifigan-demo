@@ -453,6 +453,12 @@
       border-color: rgba(251,191,36,.45);
       color: #fbbf24;
     }
+
+    .exp-sel-btn.active-exp9 {
+      background: rgba(52,211,153,.12);
+      border-color: rgba(52,211,153,.45);
+      color: #34d399;
+    }
     .exp-sel-btn.active-exp5 {
       color: var(--normal);
       border-color: rgba(74,222,128,.4);
@@ -483,6 +489,7 @@
     .exp-banner.exp6 { background: rgba(96,165,250,.04); color: rgba(96,165,250,.7); }
     .exp-banner.exp7 { background: rgba(192,132,252,.04); color: rgba(192,132,252,.7); }
     .exp-banner.exp8 { background: rgba(251,191,36,.04);  color: rgba(251,191,36,.7); }
+    .exp-banner.exp9 { background: rgba(52,211,153,.04);  color: rgba(52,211,153,.7); }
     .exp-banner strong { font-weight: 500; }
 
     /* ── Footer ──────────────────────────────────────── */
@@ -992,7 +999,7 @@
 
 <script>
 let _manifest = null;
-let _currentExp = 'exp8';
+let _currentExp = 'exp9';
 
 function getExp() { return _manifest.experiments[_currentExp]; }
 
@@ -1091,7 +1098,8 @@ function buildParamsCard(epochNum, data, label) {
                  : _currentExp === 'exp5' ? 'Exp 5 · normalizacja RMS'
                  : _currentExp === 'exp6' ? 'Exp 6 · LP 800 Hz + normalizacja RMS'
                  : _currentExp === 'exp7' ? 'Exp 7 · LP 1200 Hz + normalizacja RMS'
-                 : 'Exp 8 · LP 800 Hz + LAMBDA_SD=1.0';
+                 : _currentExp === 'exp8' ? 'Exp 8 · LP 800 Hz + LAMBDA_SD=1.0'
+                 : 'Exp 9 · LP 600 Hz tylko normal';
   const title = label || `Parametry treningu · ${expLabel} · Epoka ${epochNum} / 200`;
   const normRow = _currentExp === 'exp5'
     ? `<div class="param"><div class="param-key">Normalizacja RMS</div><div class="param-val accent">−20 dBFS</div></div>`
@@ -1101,6 +1109,8 @@ function buildParamsCard(epochNum, data, label) {
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 1200 Hz → −20 dBFS RMS</div></div>`
     : _currentExp === 'exp8'
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 800 Hz → −20 dBFS RMS</div></div>`
+    : _currentExp === 'exp9'
+    ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 600 Hz (tylko normal) → −20 dBFS RMS</div></div>`
     : '';
   const lrRow = _currentExp === 'exp4'
     ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
@@ -1134,7 +1144,7 @@ function renderEpoch(epochNum, data, hasSamples) {
          Próbki audio dla tej epoki nie zostały jeszcze zapisane — pojawią się po epoce
          ${Math.ceil(epochNum / 5) * 5}.
        </p>`;
-  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : 'var(--normal)';
+  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : _currentExp === 'exp9' ? '#34d399' : 'var(--normal)';
   document.getElementById('epoch-view').innerHTML = `
 <main>
   <div class="epoch-chip" style="border-color:${expColor}33;color:${expColor};background:${expColor}0d">
@@ -1192,7 +1202,7 @@ function showLatest() {
     return;
   }
 
-  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : 'var(--normal)';
+  const expColor = _currentExp === 'exp4' ? 'var(--murmur)' : _currentExp === 'exp6' ? '#60a5fa' : _currentExp === 'exp7' ? '#c084fc' : _currentExp === 'exp8' ? '#fbbf24' : _currentExp === 'exp9' ? '#34d399' : 'var(--normal)';
   const sections = hasSamples
     ? CLASS_CFG.map(cfg => buildClassSection(cfg, ep)).join('')
     : `<p style="font-size:.65rem;color:var(--muted);margin-top:-.5rem;letter-spacing:.06em;">
@@ -1260,9 +1270,16 @@ function buildNav() {
   const exp8btn = document.createElement('button');
   exp8btn.className = 'exp-sel-btn' + (_currentExp === 'exp8' ? ' active-exp8' : '');
   exp8btn.innerHTML = `<span class="exp-sel-dot" style="background:#fbbf24"></span>Exp 8`;
-  exp8btn.title = 'Eksperyment 8 — LP 800 Hz + LAMBDA_SD=1.0 · aktywny';
+  exp8btn.title = 'Eksperyment 8 — LP 800 Hz + LAMBDA_SD=1.0 · zatrzymany E4 (mode collapse)';
   exp8btn.onclick = () => switchExp('exp8');
   sel.appendChild(exp8btn);
+
+  const exp9btn = document.createElement('button');
+  exp9btn.className = 'exp-sel-btn' + (_currentExp === 'exp9' ? ' active-exp9' : '');
+  exp9btn.innerHTML = `<span class="exp-sel-dot" style="background:#34d399"></span>Exp 9`;
+  exp9btn.title = 'Eksperyment 9 — LP 600 Hz tylko normal · aktywny';
+  exp9btn.onclick = () => switchExp('exp9');
+  sel.appendChild(exp9btn);
 
   container.appendChild(sel);
 
@@ -1336,11 +1353,13 @@ async function init() {
   const r = await fetch(`manifest.json?t=${Date.now()}`);
   _manifest = await r.json();
   // Domyślnie pokaż aktywny eksperyment
+  const exp9 = _manifest.experiments.exp9;
   const exp8 = _manifest.experiments.exp8;
   const exp7 = _manifest.experiments.exp7;
   const exp6 = _manifest.experiments.exp6;
   const exp5 = _manifest.experiments.exp5;
-  _currentExp = (exp8 && exp8.latest_epoch > 0) ? 'exp8'
+  _currentExp = (exp9 && exp9.latest_epoch > 0) ? 'exp9'
+              : (exp8 && exp8.latest_epoch > 0) ? 'exp8'
               : (exp7 && exp7.latest_epoch > 0) ? 'exp7'
               : (exp6 && exp6.latest_epoch > 0) ? 'exp6'
               : (exp5 && exp5.latest_epoch > 0) ? 'exp5'

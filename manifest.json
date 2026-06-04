@@ -1,8 +1,8 @@
 {
   "experiments": {
     "exp5": {
-      "label": "Eksperyment 5 \u2014 normalizacja RMS \u00b7 zako\u0144czony E93",
-      "subtitle": "dataset_norm \u221220 dBFS \u00b7 ReduceLROnPlateau patience=10",
+      "label": "Eksperyment 5 — normalizacja RMS · zakończony E93",
+      "subtitle": "dataset_norm −20 dBFS · ReduceLROnPlateau patience=10",
       "status": "done",
       "latest_epoch": 93,
       "prev_epoch": 92,
@@ -916,8 +916,8 @@
       }
     },
     "exp4": {
-      "label": "Eksperyment 4 \u2014 bez normalizacji",
-      "subtitle": "50 epok \u00b7 plateau od E35 \u00b7 fm max 12.85",
+      "label": "Eksperyment 4 — bez normalizacji",
+      "subtitle": "50 epok · plateau od E35 · fm max 12.85",
       "status": "completed",
       "latest_epoch": 50,
       "prev_epoch": 49,
@@ -1407,8 +1407,8 @@
       }
     },
     "exp7": {
-      "label": "Eksperyment 7 \u2014 filtr LP 1200 Hz \u00b7 zatrzymany E10",
-      "subtitle": "dataset_exp7 \u00b7 LP 1200 Hz \u00b7 mode collapse normal\u2194murmur (corr=0.9960)",
+      "label": "Eksperyment 7 — filtr LP 1200 Hz · zatrzymany E10",
+      "subtitle": "dataset_exp7 · LP 1200 Hz · mode collapse normal↔murmur (corr=0.9960)",
       "status": "done",
       "latest_epoch": 10,
       "prev_epoch": 9,
@@ -1530,8 +1530,8 @@
       }
     },
     "exp6": {
-      "label": "Eksperyment 6 \u2014 filtr LP 800 Hz \u00b7 zatrzymany E15",
-      "subtitle": "dataset_exp6 \u00b7 LP 800 Hz \u00b7 mode collapse normal\u2194murmur (corr=0.9995)",
+      "label": "Eksperyment 6 — filtr LP 800 Hz · zatrzymany E15",
+      "subtitle": "dataset_exp6 · LP 800 Hz · mode collapse normal↔murmur (corr=0.9995)",
       "status": "done",
       "latest_epoch": 15,
       "prev_epoch": 14,
@@ -1701,9 +1701,9 @@
       }
     },
     "exp8": {
-      "label": "Eksperyment 8 \u2014 filtr LP 800 Hz + LAMBDA_SD=1.0",
-      "subtitle": "dataset_exp6 \u00b7 LP 800 Hz \u00b7 LAMBDA_SD=1.0 \u00b7 diagnoza mode collapse",
-      "status": "training",
+      "label": "Eksperyment 8 — filtr LP 800 Hz + LAMBDA_SD=1.0",
+      "subtitle": "dataset_exp6 · LP 800 Hz · LAMBDA_SD=1.0 · diagnoza mode collapse",
+      "status": "stopped",
       "latest_epoch": 4,
       "prev_epoch": 3,
       "prev_losses": {
@@ -1757,6 +1757,17 @@
           "time_s": 4261
         }
       }
+    },
+    "exp9": {
+      "label": "Eksperyment 9 — filtr LP 600 Hz tylko dla normal",
+      "subtitle": "dataset_exp9 · LP 600 Hz TYLKO normal · LAMBDA_SD=1.0 · naprawa mode collapse",
+      "status": "training",
+      "latest_epoch": 0,
+      "prev_epoch": null,
+      "prev_losses": null,
+      "latest_losses": null,
+      "epochs": {},
+      "all_epochs": {}
     }
   }
 }
