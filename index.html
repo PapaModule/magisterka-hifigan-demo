@@ -1086,7 +1086,8 @@ function samplesDir(n) {
              : _currentExp === 'exp5' ? 'output_hifigan_norm'
              : _currentExp === 'exp6' ? 'output_hifigan_exp6'
              : _currentExp === 'exp7' ? 'output_hifigan_exp7'
-             : 'output_hifigan_exp8';
+             : _currentExp === 'exp8' ? 'output_hifigan_exp8'
+             : 'output_hifigan_exp9';
   return `${base}/samples/epoch_${String(n).padStart(4,'0')}`;
 }
 
