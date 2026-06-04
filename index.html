@@ -879,9 +879,10 @@
         Korelacja Pearsona między próbkami normal i murmur osiągnęła <strong>0.9995</strong> przy E15.
         Generator ignorował etykietę klasy — klasy normal i murmur brzmiały identycznie.
         fm = 13.64 (blisko rekordu Exp 5 = 13.68) — metryka nie wykryła kolapsu.<br><br>
-        <strong>Przyczyna:</strong> LP 800 Hz usunął pasmo 800–1000 Hz, które zawiera cechy różnicujące szmer serca.
-        Przy braku tych cech generator nie miał podstaw do rozróżniania klas.<br><br>
-        <strong>Fix w Exp 7:</strong> cutoff podniesiony do 1200 Hz.
+        <strong>Wstępna hipoteza (okazała się błędna):</strong> LP 800 Hz usunął pasmo różnicujące klasy.
+        Fix w Exp 7: cutoff podniesiony do 1200 Hz — collapse utrzymał się. Rzeczywista przyczyna
+        ustalona dopiero w Exp 8: LP stosowany dla <em>wszystkich klas jednocześnie</em> wyrównuje
+        profile szumu i czyni spektrogramy klas identycznymi.
       </div>
     </div>
 
@@ -895,11 +896,12 @@
         Uruchomiony 3 czerwca 2026. Fix po mode collapse w Exp 6 — cutoff filtra LP podniesiony z 800 Hz do 1200 Hz.<br><br>
         <strong>Wynik:</strong> Mode collapse normal↔murmur utrzymał się — korelacja Pearsona = <strong>0.9960</strong> przy E10.
         fm = 13.87 przy E10 (powyżej rekordu Exp 5 = 13.68) — metryka ponownie nie wykryła kolapsu.<br><br>
-        <strong>Diagnoza:</strong> Zmiana LP z 800 Hz na 1200 Hz nie naprawiła problemu. Identyfikacja drugiej zmiennej:
-        Exp 6 i Exp 7 używały <strong>LAMBDA_SD = 2.0</strong>, podczas gdy działający Exp 5 używał <strong>LAMBDA_SD = 1.0</strong>.
-        Hipoteza: SpectrogramDiscriminator z podwojoną wagą dominuje gradient — generator uczy się dopasowywać
-        kształt widma LP (identyczny dla wszystkich klas) i ignoruje embedding klasy.<br><br>
-        <strong>Fix w Exp 8:</strong> LAMBDA_SD = 1.0 (powrót do wartości z Exp 5). Dataset: <code>dataset_exp6/</code> (LP 800 Hz).
+        <strong>Diagnoza (wstępna):</strong> Zmiana LP z 800 Hz na 1200 Hz nie naprawiła problemu. Zidentyfikowano
+        drugą zmienioną zmienną: Exp 6 i Exp 7 używały <strong>LAMBDA_SD = 2.0</strong>, podczas gdy działający
+        Exp 5 używał <strong>LAMBDA_SD = 1.0</strong>. Hipoteza: SpectrogramDiscriminator z podwojoną wagą dominuje
+        gradient i powoduje collapse.<br><br>
+        <strong>Fix w Exp 8:</strong> LAMBDA_SD = 1.0, dataset <code>dataset_exp6/</code> — collapse utrzymał się
+        (corr = 0.9965, E4). LAMBDA_SD okazał się niewinny. Prawdziwa przyczyna: filtr LP dla wszystkich klas.
       </div>
     </div>
 
@@ -907,7 +909,7 @@
       <div class="exp-header">
         <span class="exp-num">08</span>
         <span class="exp-title">cHiFi-GAN 4 kHz + filtr LP 800 Hz + LAMBDA_SD=1.0 + normalizacja RMS</span>
-        <span class="exp-status status-active">Aktualny · w toku</span>
+        <span class="exp-status status-dropped">Zatrzymany · E4</span>
       </div>
       <div class="exp-body">
         Uruchomiony 3 czerwca 2026. Diagnoza mode collapse z Exp 6/7 — izolacja zmiennej LAMBDA_SD.<br><br>
@@ -915,8 +917,36 @@
         (powrót do wartości z Exp 5, który nie wykazał mode collapse).<br><br>
         <strong>Dane:</strong> <code>dataset_exp6/</code> — 43 056 klipów, LP 800 Hz → −20 dBFS RMS
         (bez ponownego preprocessingu).<br><br>
-        <strong>Oczekiwany wynik:</strong> Jeśli collapse zniknie → LAMBDA_SD był przyczyną.
-        Jeśli collapse wróci → LP filter jest przyczyną (konieczny powrót do braku LP jak w Exp 5).
+        <strong>Wynik — mode collapse utrzymał się:</strong> Korelacja Pearsona normal↔murmur = <strong>0.9965</strong> przy E4.
+        LAMBDA_SD nie był przyczyną. Zidentyfikowano właściwą przyczynę: <strong>filtr LP stosowany dla wszystkich klas jednocześnie</strong>.<br><br>
+        <strong>Analiza widma szumu (okna ciszy):</strong> klasa <em>normal</em> posiada <strong>19% energii szumu powyżej 400 Hz</strong>
+        (szum nagraniowy z mikrofonów), podczas gdy <em>murmur</em> ma tylko <strong>2,7%</strong> — naturalna różnica
+        wynikająca z charakterystyki sygnału patologicznego. LP 800 Hz zastosowany do wszystkich klas wyrównał
+        te profile, czyniąc spektrogramy normal i murmur praktycznie identycznymi.<br><br>
+        <strong>Fix w Exp 9:</strong> LP 600 Hz stosowany <em>wyłącznie dla klasy normal</em> — wyrównuje profil szumu
+        bez usuwania diagnostycznych cech murmur.
+      </div>
+    </div>
+
+    <div class="exp-card">
+      <div class="exp-header">
+        <span class="exp-num">09</span>
+        <span class="exp-title">cHiFi-GAN 4 kHz + filtr LP 600 Hz tylko dla normal + LAMBDA_SD=1.0 + normalizacja RMS</span>
+        <span class="exp-status status-active">Aktualny · w toku</span>
+      </div>
+      <div class="exp-body">
+        Uruchomiony 4 czerwca 2026. Naprawa mode collapse po ostatecznej diagnozie z Exp 8.<br><br>
+        <strong>Kluczowa zmiana — selektywny filtr LP:</strong> Butterworth 6. rzędu (f<sub>c</sub> = 600 Hz)
+        stosowany <strong>wyłącznie dla klasy normal</strong>. Klasy murmur i extrastole przechodzą przez
+        preprocessing bez filtrowania (tylko normalizacja RMS).<br><br>
+        <strong>Uzasadnienie:</strong> Analiza widma szumu wykazała, że klasa normal ma 19% energii szumu
+        powyżej 400 Hz, podczas gdy murmur ma 2,7% — strukturalna różnica spowodowana szumem nagraniowym.
+        LP 600 Hz dla normal wyrównuje ten profil do poziomu murmur, zachowując S1/S2 (&lt;300 Hz) w pełni
+        i nie dotykając turbulencji szmerowych (80–500 Hz).<br><br>
+        <strong>Dataset:</strong> <code>dataset_exp9/</code> — 43 056 klipów
+        (normal=22 210 · LP 600 Hz, murmur=20 782 · bez LP, extrastole=64 · bez LP), wszystkie −20 dBFS RMS.<br><br>
+        <strong>Wynik E4 — brak mode collapse:</strong> Korelacja Pearsona normal↔murmur = <strong>0.019</strong>
+        (praktycznie szum). Generator różnicuje klasy — diagnoza potwierdzona eksperymentalnie.
       </div>
     </div>
   </div>
