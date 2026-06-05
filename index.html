@@ -813,22 +813,6 @@
         </div>
       </div><!-- /Historia -->
 
-      <!-- Czego NIE robić ───────────────────────────────── -->
-      <div class="about-section">
-        <div class="about-section-title">Czego NIE robić</div>
-        <p class="about-p">Reguły wyprowadzone z doświadczeń Exp 1–8. Każde naruszenie kosztowało co najmniej kilka godzin treningu.</p>
-        <ol style="margin: .75rem 0 0 1.2rem; list-style: decimal; line-height: 2.4;">
-          <li class="about-p" style="margin: 0;"><strong>SIGKILL na proces treningu</strong> — nie zapisuje checkpointu, epoka przepada. Zawsze <code>SIGTERM</code>.</li>
-          <li class="about-p" style="margin: 0;"><strong>MPS_FALLBACK=1</strong> — powoduje inne problemy z pamięcią i jest wolniejszy niż domyślne MPS.</li>
-          <li class="about-p" style="margin: 0;"><strong>spectral_norm na dyskryminatorach</strong> — deadlock Metal na Apple Silicon. Używać <code>weight_norm</code>.</li>
-          <li class="about-p" style="margin: 0;"><strong>reflect padding</strong> — hang MPS. Używać <code>mode='replicate'</code>.</li>
-          <li class="about-p" style="margin: 0;"><strong>Trening bez pełnej ścieżki <code>.venv/bin/python</code></strong> — zły interpreter powoduje problemy z Metal shader cache.</li>
-          <li class="about-p" style="margin: 0;"><strong>Przerywanie treningu podczas pierwszych 2–3 epok</strong> — Metal buduje cache shaderów, przerwa go kasuje i reset zajmuje kolejne 3h.</li>
-          <li class="about-p" style="margin: 0;"><strong>SpectrogramDiscriminator w WaveGAN</strong> — nie naprawi aliasingu architektonicznego, tylko utrudni trening.</li>
-          <li class="about-p" style="margin: 0;"><strong>Więcej niż jedna zmiana hiperparametru na raz</strong> — przy problemie nie wiadomo co go spowodowało. Zawsze jedna zmienna per eksperyment.</li>
-        </ol>
-      </div>
-
       <!-- Architektura -->
       <div class="about-section">
         <div class="about-section-title">Aktualna architektura — cHiFi-GAN</div>
