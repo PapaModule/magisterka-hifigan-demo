@@ -150,6 +150,16 @@
       color: var(--muted); margin-bottom: 1rem;
       opacity: 0; animation: rise .8s .1s ease forwards;
     }
+    .demo-badge {
+      display: inline-block; vertical-align: middle;
+      font-family: 'Inter', sans-serif; font-size: .55rem; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      padding: .18em .55em; border-radius: 4px;
+      border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      position: relative; top: -.1em;
+    }
     h1 {
       font-family: 'Cormorant Garamond', serif;
       font-size: clamp(1.8rem, 4.5vw, 3.4rem);
@@ -537,7 +547,7 @@
 <!-- ── Header ───────────────────────────────────────────── -->
 <header>
   <p class="eyebrow">Praca magisterska · Synteza audio · Dawid Nowak · 2026</p>
-  <h1>cHiFi-GAN &mdash; Odsłuch <em>wyników treningu</em></h1>
+  <h1>cHiFi-GAN &mdash; Odsłuch <em>wyników treningu</em> <span class="demo-badge">DEMO</span></h1>
   <p class="subtitle">
     Conditional HiFi-GAN &nbsp;·&nbsp; normal / murmur / extrastole
     &nbsp;·&nbsp; SR 4 000 Hz &nbsp;·&nbsp; 3 s
