@@ -871,6 +871,133 @@
     </div><!-- /about-wrap -->
     </div><!-- /view-about -->
 
+    <!-- Jak działa model ─────────────────────────────── -->
+    <div id="view-model">
+    <div class="about-wrap">
+
+      <div class="about-section">
+        <div class="about-section-title">Co to jest GAN?</div>
+        <p class="about-lead">
+          GAN to para dwóch sieci neuronowych, które uczą się nawzajem — jak fałszerz i bankier w grze bez końca.
+        </p>
+        <p class="about-p">
+          <strong>Generator</strong> startuje od losowego szumu — tabeli 128 liczb — i próbuje zamienić go w dźwięk serca brzmiący jak prawdziwy. Na początku generuje czysty hałas.
+        </p>
+        <p class="about-p">
+          <strong>Dyskryminator</strong> to sędzia. Dostaje naprzemiennie prawdziwe nagrania z datasetu i fałszywe od generatora. Jego zadanie: odróżnić jedne od drugich. Gdy popełnia błąd — uczy się. Gdy generator jest zbyt łatwy do wykrycia — generator uczy się być lepszy.
+        </p>
+        <p class="about-p">
+          W naszym modelu to <strong>warunkowy GAN (cGAN)</strong> — generator dostaje też etykietę klasy: <em>normal</em>, <em>murmur</em> lub <em>extrastole</em>. Dzięki temu możemy "zamówić" konkretny typ dźwięku serca zamiast generować losowo.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">Dlaczego HiFi-GAN, a nie WaveGAN?</div>
+        <p class="about-p">
+          Pierwsza wersja modelu (WaveGAN) generowała dźwięki z charakterystycznym "gwizdaniem" w tle, którego nie dało się usunąć. Przyczyna: matematyczny artefakt zwany <strong>aliasingiem</strong> — podobny do prążków na filmowym ujęciu kręcącego się koła. Wynikał z samej architektury sieci, nie z błędów uczenia.
+        </p>
+        <div class="arch-card" style="margin: 1rem 0;">
+          <div class="arch-card-title">WaveGAN vs HiFi-GAN — różnica w upsamplingu</div>
+          WaveGAN:&nbsp; [krótki tensor] &rarr; ConvTranspose1d &rarr; [sygnał]&nbsp;&nbsp;&nbsp;&larr; aliasing<br>
+          HiFi-GAN: [krótki tensor] &rarr; Upsample(nearest) &rarr; Conv1d &rarr; [sygnał] &larr; brak aliasingu
+        </div>
+        <p class="about-p">
+          <code>Upsample(nearest)</code> powiela sąsiednie wartości, a <code>Conv1d</code> wygładza wynik. Żadnych regularnych wzorców matematycznych — żadnego aliasingu.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">Jak generator zamienia szum w dźwięk serca</div>
+        <p class="about-p">Generator to maszyna rozciągająca. Zaczyna od krótkiego "zalążka" i stopniowo rozciąga go do pełnego nagrania w pięciu krokach — każdy krok ×4.</p>
+        <div class="arch-card" style="margin: 1rem 0;">
+          <div class="arch-card-title">Przepływ sygnału przez generator</div>
+          szum (128 liczb) + etykieta klasy (normal / murmur / extrastole)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Linear &mdash; zamienia szum w krótki szkielet (12 próbek)<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Upsample &times;4 + wygładzanie &nbsp;&rarr;&nbsp; 48 próbek<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Upsample &times;4 + wygładzanie &nbsp;&rarr;&nbsp; 192 próbki<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Upsample &times;4 + wygładzanie &nbsp;&rarr;&nbsp; 768 próbek<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Upsample &times;4 + wygładzanie &nbsp;&rarr;&nbsp; 3 072 próbki<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; Upsample &times;4 + wygładzanie &nbsp;&rarr;&nbsp; 12 288 próbek<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;&darr; przycięcie do 12 000 próbek = 3 sekundy przy 4 000 Hz<br>
+          <strong>wynik: sygnał audio w zakresie [&minus;1, 1]</strong>
+        </div>
+        <p class="about-p">
+          Każdy krok "widzi" jednocześnie drobne detale i długofalowe wzorce — przez trzy równoległe filtry (kernele 3, 7 i 11 próbek), których wyniki są sumowane. Dzięki temu generator potrafi odwzorować zarówno pojedyncze uderzenie serca jak i jego rytmikę.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">Trzy krytycy — skąd pochodzi sygnał uczący</div>
+        <p class="about-p">
+          Zamiast jednego sędziego generator musi okłamać trzech różnych krytyków jednocześnie — każdy sprawdza inny aspekt dźwięku.
+        </p>
+        <div class="arch-grid-3">
+          <div class="arch-card">
+            <div class="arch-card-title">MPD &mdash; rytm</div>
+            <strong>Multi-Period Discriminator</strong><br><br>
+            Sprawdza czy rytm jest regularny jak bicie serca. "Zwija" sygnał w siatki o różnych okresach — patrzy czy co 2., co 3. i co 5. próbka tworzą spójny wzorzec rytmiczny.
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">MSD &mdash; skala</div>
+            <strong>Multi-Scale Discriminator</strong><br><br>
+            Patrzy na dźwięk przez lupę i przez lornetkę jednocześnie — oryginał, wersję 2&times; spowolnioną i 4&times; spowolnioną. Wychwytuje wzorce na różnych skalach czasowych.
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">SD &mdash; spektrogram</div>
+            <strong>SpectrogramDiscriminator</strong><br><br>
+            Konwertuje dźwięk do obrazu częstotliwości w czasie i ocenia go jak obraz 2D. Karze generator za złe widmo — bez tego generator mógłby generować "poprawne" przebiegi, które na spektrogramie wyglądają jak szum.
+          </div>
+        </div>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">Feature matching — jak mierzymy postęp</div>
+        <p class="about-lead">
+          <strong>fm</strong> to główna miara jakości generatora &mdash; im wyżej, tym bliżej oryginału.
+        </p>
+        <p class="about-p">
+          Zamiast pytać tylko "prawdziwy czy fałszywy?", mierzymy jak podobnie dyskryminator <em>reaguje wewnętrznie</em> na prawdziwe i fałszywe nagrania. Jeśli pośrednie warstwy sieci reagują identycznie — generator nauczył się struktury dźwięku, nie tylko powierzchownej imitacji.
+        </p>
+        <table class="about-table">
+          <thead>
+            <tr><th>Eksperyment</th><th>Plateau fm</th><th>Epoka</th><th>Kluczowa zmiana</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Exp 4</td><td>~12.8</td><td>E35</td><td>pierwsza działająca architektura</td></tr>
+            <tr><td>Exp 5</td><td class="accent">13.68</td><td class="accent">E91</td><td>normalizacja amplitudy RMS &minus;20 dBFS</td></tr>
+            <tr><td>Exp 9</td><td class="accent">w toku</td><td>&mdash;</td><td>selektywny filtr LP tylko dla klasy normal</td></tr>
+          </tbody>
+        </table>
+        <p class="about-p">
+          Wartości fm nie mają górnego limitu — ważny jest <strong>trend</strong> i <strong>poziom plateau</strong>. Gdy fm przestaje rosnąć przez kilkanaście epok, automatyczny scheduler obniża tempo uczenia o połowę, żeby "wycisnąć" dalszy postęp.
+        </p>
+        <p class="about-p">
+          <strong>Cel końcowy:</strong> test słuchowy — odsetek poprawnych klasyfikacji real/fake przez słuchaczy. Wynik 50% oznacza, że model skutecznie oszukuje ludzi i wygenerowane próbki są nieodróżnialne od prawdziwych nagrań.
+        </p>
+      </div>
+
+      <div class="about-section">
+        <div class="about-section-title">Co oznaczają liczby w tabeli</div>
+        <table class="about-table">
+          <thead>
+            <tr><th>Metryka</th><th>Co mierzy</th><th>Zdrowy trend</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>loss_D</strong></td><td>koszt dyskryminatora — jak trudno mu odróżnić real od fake</td><td class="muted">maleje powoli</td></tr>
+            <tr><td><strong>loss_G</strong></td><td>łączny koszt generatora — suma sygnałów od wszystkich krytyków</td><td class="muted">rośnie</td></tr>
+            <tr><td><strong>adv</strong></td><td>składnik adversarialny — jak skutecznie generator oszukuje dyskryminator</td><td class="muted">rośnie</td></tr>
+            <tr><td class="accent"><strong>fm</strong></td><td>feature matching — główna miara jakości audio generatora</td><td class="accent">rośnie &uarr;</td></tr>
+            <tr><td><strong>sd</strong></td><td>ocena spektrogramu przez SpectrogramDiscriminator</td><td class="muted">małe, stabilne</td></tr>
+          </tbody>
+        </table>
+        <p class="about-p">
+          Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem.
+        </p>
+      </div>
+
+    </div><!-- /about-wrap -->
+    </div><!-- /view-model -->
+
     <!-- Widok epoki (wypełniany przez JS) -->
     <div id="epoch-view"></div>
 
@@ -1066,14 +1193,25 @@ function setActive(isLatest, epochNum) {
     );
   });
   document.getElementById('view-about').classList.remove('active');
+  document.getElementById('view-model').classList.remove('active');
   document.getElementById('epoch-view').style.display = 'block';
 }
 
 function showAbout() {
   document.getElementById('view-about').classList.add('active');
+  document.getElementById('view-model').classList.remove('active');
   document.getElementById('epoch-view').style.display = 'none';
   document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn =>
     btn.classList.toggle('active', btn.dataset.tab === 'about')
+  );
+}
+
+function showModel() {
+  document.getElementById('view-about').classList.remove('active');
+  document.getElementById('view-model').classList.add('active');
+  document.getElementById('epoch-view').style.display = 'none';
+  document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.tab === 'model')
   );
 }
 
@@ -1159,6 +1297,13 @@ function buildNav() {
   btnAbout.onclick = () => showAbout();
   container.appendChild(btnAbout);
 
+  const btnModel = document.createElement('button');
+  btnModel.className = 'tab-btn tab-model';
+  btnModel.dataset.tab = 'model';
+  btnModel.innerHTML = 'Jak działa model';
+  btnModel.onclick = () => showModel();
+  container.appendChild(btnModel);
+
   const sep = document.createElement('div');
   sep.className = 'nav-divider';
   container.appendChild(sep);
@@ -1223,11 +1368,14 @@ function switchExp(expKey) {
   _currentExp = expKey;
   applyAccentColor();
   const aboutActive = document.getElementById('view-about').classList.contains('active');
+  const modelActive = document.getElementById('view-model').classList.contains('active');
   buildSidebar();
   buildNav();
   buildLossHistory();
   if (aboutActive) {
     showAbout();
+  } else if (modelActive) {
+    showModel();
   } else {
     showLatest();
   }
@@ -1236,12 +1384,20 @@ function switchExp(expKey) {
 function buildNavAboutOnly() {
   const container = document.getElementById('nav-tabs');
   container.innerHTML = '';
-  const btn = document.createElement('button');
-  btn.className = 'tab-btn tab-about active';
-  btn.dataset.tab = 'about';
-  btn.innerHTML = 'O projekcie';
-  btn.onclick = () => showAbout();
-  container.appendChild(btn);
+
+  const btnAbout = document.createElement('button');
+  btnAbout.className = 'tab-btn tab-about active';
+  btnAbout.dataset.tab = 'about';
+  btnAbout.innerHTML = 'O projekcie';
+  btnAbout.onclick = () => showAbout();
+  container.appendChild(btnAbout);
+
+  const btnModel = document.createElement('button');
+  btnModel.className = 'tab-btn tab-model';
+  btnModel.dataset.tab = 'model';
+  btnModel.innerHTML = 'Jak działa model';
+  btnModel.onclick = () => showModel();
+  container.appendChild(btnModel);
 }
 
 async function init() {
