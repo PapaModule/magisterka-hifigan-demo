@@ -142,7 +142,7 @@
       content: '';
       position: absolute; inset: 0;
       background: radial-gradient(ellipse 60% 50% at 50% 0%,
-        rgba(74,222,128,.05) 0%, transparent 70%);
+        color-mix(in srgb, var(--accent) 5%, transparent) 0%, transparent 70%);
       pointer-events: none;
     }
     .eyebrow {
@@ -269,11 +269,11 @@
     .epoch-chip {
       display: inline-flex; align-items: center; gap: .5rem;
       padding: .35rem .9rem;
-      border: 1px solid rgba(74,222,128,.2);
+      border: 1px solid color-mix(in srgb, var(--accent) 20%, transparent);
       border-radius: 20px; font-size: .6rem;
       letter-spacing: .15em; text-transform: uppercase;
-      color: var(--normal); margin-bottom: 1.8rem;
-      background: rgba(74,222,128,.05);
+      color: var(--accent); margin-bottom: 1.8rem;
+      background: color-mix(in srgb, var(--accent) 5%, transparent);
     }
     .epoch-chip .dot {
       width: 5px; height: 5px; border-radius: 50%;
@@ -359,7 +359,7 @@
     .sec-normal .class-title { color: var(--normal); }
     .sec-normal .badge-gen   { background: var(--normal); }
     .sec-normal audio        { accent-color: var(--normal); }
-    .sec-normal .cell.gen    { border-left: 2px solid rgba(74,222,128,.2); }
+    .sec-normal .cell.gen    { border-left: 2px solid color-mix(in srgb, var(--accent) 20%, transparent); }
 
     .sec-murmur .class-pip   { background: var(--murmur); box-shadow: 0 0 8px var(--murmur); }
     .sec-murmur .class-title { color: var(--murmur); }
@@ -421,7 +421,7 @@
     }
     .status-done    { background: rgba(255,255,255,.07); color: var(--muted); }
     .status-dropped { background: rgba(251,146,60,.12);  color: var(--murmur); }
-    .status-active  { background: rgba(74,222,128,.12);  color: var(--normal); }
+    .status-active  { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
     .exp-body {
       padding: .9rem 1.2rem; font-size: .63rem;
       line-height: 1.85; color: var(--muted);
