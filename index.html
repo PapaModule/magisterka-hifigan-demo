@@ -624,6 +624,7 @@
             To fundamentalna wada architektury WaveGAN przy tak niskim SR.<br><br>
             <strong>Próby naprawy:</strong> filtr LPF 700 Hz (Chebyshev II, rząd 16) i multi-notch — obcięły artefakt,
             ale jednocześnie uszkodziły naturalny dźwięk. Odrzucone.
+            <br><br><strong>Lekcja:</strong> <em>Przy niskim sample rate, ConvTranspose1d generuje aliasing w centrum pasma słyszalnego — to wada architektoniczna, której nie naprawisz filtrowaniem. Zmień architekturę, nie parametry filtra.</em>
           </div>
         </div>
 
@@ -641,6 +642,7 @@
             <strong>Obserwacja dodatkowa:</strong> spektrogramy z epok 5–30 pokazywały energię w całym paśmie 0–8 kHz,
             podczas gdy prawdziwe dźwięki serca mają energię niemal wyłącznie poniżej 1 kHz. Aliasing przesunął się,
             ale szerokopasmowy szum stał się jeszcze gorszy. Dataset usunięty.
+            <br><br><strong>Lekcja:</strong> <em>Podniesienie sample rate nie naprawia aliasingu WaveGAN — artefakt się przesunął, ale szerokopasmowy szum stał się gorszy. WaveGAN ma tę wadę przy każdym SR.</em>
           </div>
         </div>
 
@@ -663,6 +665,7 @@
               <li><strong>Problem 3 — brak feedbacku spektralnego:</strong> generator uczył się regularnych
                   pulsów, ale ignorował kształt widma. Fix: dodano SpectrogramDiscriminator.</li>
             </ul>
+            <br><strong>Lekcja:</strong> <em>CLASS_EMB_DIM &lt; 32 to za mało dla klas o bardzo różnym charakterze akustycznym. LR_D powinno być mniejsze niż LR_G — dyskryminator ma prostsze zadanie i uczy się szybciej.</em>
           </div>
         </div>
 
@@ -690,6 +693,7 @@
               <li>Poprawki MPS: <code>weight_norm</code> zamiast <code>spectral_norm</code>, <code>mode='replicate'</code> zamiast <code>'reflect'</code></li>
               <li>Stały LR bez schedulera → brak mechanizmu wyjścia z równowagi</li>
             </ul>
+            <br><strong>Lekcja:</strong> <em>Spread amplitud &gt;15 dB w datasecie powoduje plateau — generator traci pojemność na decydowanie o głośności zamiast na uczenie się struktury dźwięku. Normalizuj amplitudy przed treningiem.</em>
           </div>
         </div>
 
@@ -714,6 +718,7 @@
             LR_G: 1e-4 → 5e-5, LR_D: 5e-5 → 2.5e-5.<br><br>
             <strong>Scheduler uruchomiony po E79</strong> (fm oscylowało 13.22–13.42 przez 11 epok, max E68 = 13.42):
             LR_G: 5e-5 → 2.5e-5, LR_D: 2.5e-5 → 1.25e-5. E83: fm = 13.49 — nowe maksimum.
+            <br><br><strong>Lekcja:</strong> <em>Normalizacja RMS bez filtrowania wzmacnia szum razem z sygnałem. Przed normalizacją zdefiniuj "sygnał" — i wyodrębnij go filtrem od szumu nagraniowego.</em>
           </div>
         </div>
 
@@ -738,6 +743,7 @@
             Fix w Exp 7: cutoff podniesiony do 1200 Hz — collapse utrzymał się. Rzeczywista przyczyna
             ustalona dopiero w Exp 8: LP stosowany dla <em>wszystkich klas jednocześnie</em> wyrównuje
             profile szumu i czyni spektrogramy klas identycznymi.
+            <br><br><strong>Lekcja:</strong> <em>Nigdy nie zmieniaj więcej niż jednego hiperparametru na raz. LP filtr i LAMBDA_SD zmienione jednocześnie — 25 epok treningu straconego wyłącznie na diagnozę przyczyny.</em>
           </div>
         </div>
 
@@ -756,6 +762,7 @@
             Hipoteza: SpectrogramDiscriminator z podwojoną wagą dominuje gradient.<br><br>
             <strong>Fix w Exp 8:</strong> LAMBDA_SD = 1.0 — collapse utrzymał się (corr = 0.9965, E4).
             LAMBDA_SD okazał się niewinny. Prawdziwa przyczyna: filtr LP dla wszystkich klas.
+            <br><br><strong>Lekcja:</strong> <em>Metryki (fm) nie wykrywają mode collapse — wyglądają dobrze mimo że klasy są identyczne. Zawsze sprawdzaj korelację Pearsona między klasami niezależnie od fm.</em>
           </div>
         </div>
 
@@ -777,6 +784,7 @@
             te profile, czyniąc spektrogramy normal i murmur praktycznie identycznymi.<br><br>
             <strong>Fix w Exp 9:</strong> LP 600 Hz stosowany <em>wyłącznie dla klasy normal</em> — wyrównuje profil szumu
             bez usuwania diagnostycznych cech murmur.
+            <br><br><strong>Lekcja:</strong> <em>Filtr LP stosowany dla wszystkich klas jednocześnie wyrównuje profile szumu i czyni spektrogramy klas identycznymi — generator traci sygnał kondycjonowania klasowego. Filtruj selektywnie.</em>
           </div>
         </div>
 
@@ -800,9 +808,26 @@
             <strong>Wynik E4 — brak mode collapse:</strong> korelacja Pearsona = <strong>0.019</strong>.
             <strong>Wynik E9 — corr = 0.013</strong>, <strong>E10 — corr = 0.007</strong> — trend malejący,
             generator różnicuje klasy coraz wyraźniej.
+            <br><br><strong>Lekcja:</strong> <em>Selektywne filtrowanie klas z różnymi profilami szumu pozwala wyrównać wejście bez utraty cech diagnostycznych klas patologicznych.</em>
           </div>
         </div>
       </div><!-- /Historia -->
+
+      <!-- Czego NIE robić ───────────────────────────────── -->
+      <div class="about-section">
+        <div class="about-section-title">Czego NIE robić</div>
+        <p class="about-p">Reguły wyprowadzone z doświadczeń Exp 1–8. Każde naruszenie kosztowało co najmniej kilka godzin treningu.</p>
+        <ol style="margin: .75rem 0 0 1.2rem; list-style: decimal; line-height: 2.4;">
+          <li class="about-p" style="margin: 0;"><strong>SIGKILL na proces treningu</strong> — nie zapisuje checkpointu, epoka przepada. Zawsze <code>SIGTERM</code>.</li>
+          <li class="about-p" style="margin: 0;"><strong>MPS_FALLBACK=1</strong> — powoduje inne problemy z pamięcią i jest wolniejszy niż domyślne MPS.</li>
+          <li class="about-p" style="margin: 0;"><strong>spectral_norm na dyskryminatorach</strong> — deadlock Metal na Apple Silicon. Używać <code>weight_norm</code>.</li>
+          <li class="about-p" style="margin: 0;"><strong>reflect padding</strong> — hang MPS. Używać <code>mode='replicate'</code>.</li>
+          <li class="about-p" style="margin: 0;"><strong>Trening bez pełnej ścieżki <code>.venv/bin/python</code></strong> — zły interpreter powoduje problemy z Metal shader cache.</li>
+          <li class="about-p" style="margin: 0;"><strong>Przerywanie treningu podczas pierwszych 2–3 epok</strong> — Metal buduje cache shaderów, przerwa go kasuje i reset zajmuje kolejne 3h.</li>
+          <li class="about-p" style="margin: 0;"><strong>SpectrogramDiscriminator w WaveGAN</strong> — nie naprawi aliasingu architektonicznego, tylko utrudni trening.</li>
+          <li class="about-p" style="margin: 0;"><strong>Więcej niż jedna zmiana hiperparametru na raz</strong> — przy problemie nie wiadomo co go spowodowało. Zawsze jedna zmienna per eksperyment.</li>
+        </ol>
+      </div>
 
       <!-- Architektura -->
       <div class="about-section">
