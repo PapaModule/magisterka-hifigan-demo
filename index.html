@@ -851,23 +851,6 @@
         </div>
       </div>
 
-      <!-- Postęp treningu -->
-      <div class="about-section">
-        <div class="about-section-title" id="loss-section-title">Postęp treningu</div>
-        <table class="about-table">
-          <thead>
-            <tr><th>Epoka</th><th>loss_D</th><th>loss_G</th><th>adv</th><th>fm</th><th>sd</th><th>Czas</th></tr>
-          </thead>
-          <tbody id="loss-history-body">
-            <tr><td colspan="7" style="color:var(--muted);font-size:.6rem;">Ładowanie…</td></tr>
-          </tbody>
-        </table>
-        <p class="about-p">Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy malejącym <strong>loss_D</strong>
-        świadczą o zdrowej dynamice GAN — dyskryminator nie dominuje.</p>
-        <p class="about-p" id="slow-epochs-note">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
-        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — epoki, po których scheduler obniżył LR (ReduceLROnPlateau).</p>
-      </div>
-
       <!-- Ewaluacja -->
       <div class="about-section">
         <div class="about-section-title">Plan ewaluacji</div>
@@ -1012,6 +995,18 @@
         <p class="about-p">
           Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem.
         </p>
+        <p class="about-p" style="margin-top:1.2rem;">Poniżej dane z aktualnie wybranego eksperymentu (wybierz z panelu po lewej):</p>
+        <div class="about-section-title" id="loss-section-title" style="font-size:.7rem;margin:1rem 0 .5rem;">Postęp treningu</div>
+        <table class="about-table">
+          <thead>
+            <tr><th>Epoka</th><th>loss_D</th><th>loss_G</th><th>adv</th><th>fm</th><th>sd</th><th>Czas</th></tr>
+          </thead>
+          <tbody id="loss-history-body">
+            <tr><td colspan="7" style="color:var(--muted);font-size:.6rem;letter-spacing:.06em;">Wybierz eksperyment z panelu po lewej</td></tr>
+          </tbody>
+        </table>
+        <p class="about-p" id="slow-epochs-note" style="display:none;">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
+        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — epoki, po których scheduler obniżył LR (ReduceLROnPlateau).</p>
       </div>
 
     </div><!-- /about-wrap -->
