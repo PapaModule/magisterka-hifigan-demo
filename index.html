@@ -1023,12 +1023,16 @@ function buildParamsCard(epochNum, data, label) {
 }
 
 function expColor() {
-  return _currentExp === 'exp4' ? 'var(--murmur)'
-       : _currentExp === 'exp6' ? '#60a5fa'
-       : _currentExp === 'exp7' ? '#c084fc'
-       : _currentExp === 'exp8' ? '#fbbf24'
-       : _currentExp === 'exp9' ? '#34d399'
-       : 'var(--normal)';
+  return _currentExp === 'exp4' ? '#f59e0b'   /* amber  — było orange jak murmur */
+       : _currentExp === 'exp5' ? '#22d3ee'   /* cyan   — było green jak normal  */
+       : _currentExp === 'exp6' ? '#60a5fa'   /* blue                            */
+       : _currentExp === 'exp7' ? '#a78bfa'   /* violet — było purple jak extra  */
+       : _currentExp === 'exp8' ? '#fb7185'   /* rose   — było yellow            */
+       : '#34d399';                           /* emerald — exp9, default         */
+}
+
+function applyAccentColor() {
+  document.documentElement.style.setProperty('--accent', expColor());
 }
 
 function renderEpoch(epochNum, data, hasSamples) {
@@ -1217,6 +1221,7 @@ function buildLossHistory() {
 
 function switchExp(expKey) {
   _currentExp = expKey;
+  applyAccentColor();
   const aboutActive = document.getElementById('view-about').classList.contains('active');
   buildSidebar();
   buildNav();
@@ -1259,6 +1264,7 @@ async function init() {
                 : (exp6 && exp6.latest_epoch > 0) ? 'exp6'
                 : (exp5 && exp5.latest_epoch > 0) ? 'exp5'
                 : 'exp4';
+    applyAccentColor();
     buildSidebar();
     buildNav();
     buildLossHistory();
