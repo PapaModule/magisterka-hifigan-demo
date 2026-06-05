@@ -1393,9 +1393,6 @@ function switchExp(expKey) {
   buildSidebar();
   buildNav();
   buildLossHistory();
-  showAbout();
-  const card = document.getElementById('exp-section-' + expKey);
-  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function buildNavAboutOnly() {
