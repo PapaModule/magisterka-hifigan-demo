@@ -1132,7 +1132,7 @@ function buildParamsCard(epochNum, data, label) {
   const lrVal = _currentExp === 'exp4'
     ? '2e-4 / 1e-4 · stały'
     : fired > 0
-    ? `2e-4 → ${fmtLR(lrG)} / 1e-4 → ${fmtLR(lrD)}`
+    ? `${fmtLR(lrG)} / ${fmtLR(lrD)} ↓${fired}×`
     : '2e-4 / 1e-4';
   const lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val ${fired > 0 ? 'accent' : ''}">${lrVal}</div></div>`;
   return `
