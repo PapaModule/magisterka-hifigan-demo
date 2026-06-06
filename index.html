@@ -1263,8 +1263,7 @@ function showAudio() {
   document.getElementById('view-model').classList.remove('active');
   document.getElementById('view-audio').classList.add('active');
   setNavActive('audio');
-  buildAudioTrainingNav();
-  if (_currentExp) buildAudioEpochNav();
+  selectAudioTraining('exp9');
 }
 
 /* ── Audio view — nawigacja wewnętrzna ───────────────────── */
@@ -1298,14 +1297,16 @@ function buildAudioEpochNav() {
     epochNav.appendChild(btn);
   });
 
-  const latestEp = exp.latest_epoch || 0;
-  const btnLatest = document.createElement('button');
-  btnLatest.className = 'tab-btn tab-latest';
-  btnLatest.dataset.epoch = latestEp;
-  const latestLabel = latestEp > 0 ? `E${latestEp}` : '…';
-  btnLatest.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
-  btnLatest.onclick = () => showLatest();
-  epochNav.appendChild(btnLatest);
+  if (_currentExp === 'exp9') {
+    const latestEp = exp.latest_epoch || 0;
+    const btnLatest = document.createElement('button');
+    btnLatest.className = 'tab-btn tab-latest';
+    btnLatest.dataset.epoch = latestEp;
+    const latestLabel = latestEp > 0 ? `E${latestEp}` : '…';
+    btnLatest.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
+    btnLatest.onclick = () => showLatest();
+    epochNav.appendChild(btnLatest);
+  }
 }
 
 function selectAudioTraining(expKey) {
@@ -1360,7 +1361,8 @@ function buildLossHistory() {
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
   const SLOW_CUTOFF = _tableExp === 'exp4' ? 3 : 0;
-  const SCHEDULER_EPOCHS = _tableExp === 'exp5' ? [44, 59, 79] : [];
+  const manSched = _manifest && _manifest.experiments[_tableExp] && _manifest.experiments[_tableExp].scheduler_epochs;
+  const SCHEDULER_EPOCHS = manSched || (_tableExp === 'exp5' ? [44, 59, 79] : []);
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
@@ -1382,7 +1384,7 @@ function buildLossHistory() {
   const note = document.getElementById('slow-epochs-note');
   if (note) note.style.display = _tableExp === 'exp4' ? '' : 'none';
   const schedNote = document.getElementById('scheduler-note');
-  if (schedNote) schedNote.style.display = (_tableExp === 'exp5' || _tableExp === 'exp6') ? '' : 'none';
+  if (schedNote) schedNote.style.display = SCHEDULER_EPOCHS.length > 0 ? '' : 'none';
   const titleEl = document.getElementById('loss-section-title');
   if (titleEl) {
     const t = TRAININGS.find(t => t.key === _tableExp);
