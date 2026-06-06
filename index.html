@@ -1357,7 +1357,7 @@ function buildLossHistory() {
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
   const SLOW_CUTOFF = _currentExp === 'exp4' ? 3 : 0;
-  const SCHEDULER_EPOCHS = _currentExp === 'exp5' ? [44, 59, 79] : [];
+  const SCHEDULER_EPOCHS = exp.scheduler_epochs || (_currentExp === 'exp5' ? [44, 59, 79] : []);
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
@@ -1379,7 +1379,7 @@ function buildLossHistory() {
   const note = document.getElementById('slow-epochs-note');
   if (note) note.style.display = _currentExp === 'exp4' ? '' : 'none';
   const schedNote = document.getElementById('scheduler-note');
-  if (schedNote) schedNote.style.display = (_currentExp === 'exp5' || _currentExp === 'exp6') ? '' : 'none';
+  if (schedNote) schedNote.style.display = SCHEDULER_EPOCHS.length > 0 ? 'block' : 'none';
   const titleEl = document.getElementById('loss-section-title');
   if (titleEl) {
     const names = { exp4:'Exp 4', exp5:'Exp 5', exp6:'Exp 6', exp7:'Exp 7', exp8:'Exp 8', exp9:'Exp 9' };
