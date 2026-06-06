@@ -1139,9 +1139,24 @@ function buildParamsCard(epochNum, data, label) {
     : _currentExp === 'exp9'
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 600 Hz (tylko normal) → −20 dBFS RMS</div></div>`
     : '';
-  const lrRow = _currentExp === 'exp4'
-    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
-    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`;
+  let lrRow;
+  if (_currentExp === 'exp4') {
+    lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`;
+  } else {
+    const exp = _manifest && _manifest.experiments && _manifest.experiments[_currentExp];
+    const schedEpochs = (exp && exp.scheduler_epochs) || (_currentExp === 'exp5' ? [44, 59, 79] : []);
+    const drops = schedEpochs.filter(e => e <= epochNum).length;
+    const factor = Math.pow(0.5, drops);
+    const fmtLR = v => {
+      if (v >= 1e-4) return (v * 1e4).toFixed(0) + 'e-4';
+      if (v >= 1e-5) return (v * 1e5).toFixed(1).replace(/\.0$/, '') + 'e-5';
+      return v.toExponential(2);
+    };
+    const lrG = fmtLR(2e-4 * factor);
+    const lrD = fmtLR(1e-4 * factor);
+    const suffix = schedEpochs.length > 0 && drops > 0 ? ` <span style="color:var(--error)">↓×${drops}</span>` : ' · plateau→×0.5';
+    lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">${lrG} / ${lrD}${suffix}</div></div>`;
+  }
   return `
   <div class="params-card">
     <div class="card-label">${title}</div>
