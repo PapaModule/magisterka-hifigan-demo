@@ -1094,6 +1094,20 @@ function buildClassSection(cfg, epochNum) {
   </div>`;
 }
 
+function computeLRAtEpoch(epochNum) {
+  const sched = (_manifest && _manifest.experiments[_currentExp] && _manifest.experiments[_currentExp].scheduler_epochs)
+    || (_currentExp === 'exp5' ? [44, 59, 79] : []);
+  const fired = (sched || []).filter(e => epochNum > e).length;
+  let lrG = 2e-4, lrD = 1e-4;
+  for (let i = 0; i < fired; i++) { lrG /= 2; lrD /= 2; }
+  return { lrG, lrD, fired };
+}
+
+function fmtLR(v) {
+  const m = { 2e-4:'2e-4', 1e-4:'1e-4', 5e-5:'5e-5', 2.5e-5:'2.5e-5', 1.25e-5:'1.25e-5', 6.25e-6:'6.25e-6' };
+  return m[v] || v.toExponential(2);
+}
+
 function buildParamsCard(epochNum, data, label) {
   const fmt = v => v != null ? v : '—';
   const expLabel = _currentExp === 'exp4' ? 'Trening 4 · bez normalizacji'
@@ -1114,9 +1128,11 @@ function buildParamsCard(epochNum, data, label) {
     : _currentExp === 'exp9'
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 600 Hz (tylko normal) → −20 dBFS RMS</div></div>`
     : '';
-  const lrRow = _currentExp === 'exp4'
-    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
-    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`;
+  const { lrG, lrD, fired } = computeLRAtEpoch(epochNum);
+  const lrVal = _currentExp === 'exp4'
+    ? '2e-4 / 1e-4 · stały'
+    : `${fmtLR(lrG)} / ${fmtLR(lrD)}`;
+  const lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val ${fired > 0 ? 'accent' : ''}">${lrVal}</div></div>`;
   return `
   <div class="params-card">
     <div class="card-label">${title}</div>
