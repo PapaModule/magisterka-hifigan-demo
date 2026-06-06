@@ -1129,11 +1129,12 @@ function buildParamsCard(epochNum, data, label) {
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 600 Hz (tylko normal) → −20 dBFS RMS</div></div>`
     : '';
   const { lrG, lrD, fired } = computeLRAtEpoch(epochNum);
+  const lrSuffix = fired > 0
+    ? ` <span style="color:#f87171">↓×${fired}</span>`
+    : '';
   const lrVal = _currentExp === 'exp4'
     ? '2e-4 / 1e-4 · stały'
-    : fired > 0
-    ? `${fmtLR(lrG)} / ${fmtLR(lrD)} ↓${fired}×`
-    : '2e-4 / 1e-4';
+    : `${fmtLR(lrG)} / ${fmtLR(lrD)}${lrSuffix}`;
   const lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val ${fired > 0 ? 'accent' : ''}">${lrVal}</div></div>`;
   return `
   <div class="params-card">
