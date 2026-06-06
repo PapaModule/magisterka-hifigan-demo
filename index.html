@@ -1145,7 +1145,7 @@ function buildParamsCard(epochNum, data, label) {
   } else {
     const exp = _manifest && _manifest.experiments && _manifest.experiments[_currentExp];
     const schedEpochs = (exp && exp.scheduler_epochs) || (_currentExp === 'exp5' ? [44, 59, 79] : []);
-    const drops = schedEpochs.filter(e => e <= epochNum).length;
+    const drops = schedEpochs.filter(e => e < epochNum).length;
     const factor = Math.pow(0.5, drops);
     const fmtLR = v => {
       if (v >= 1e-4) return (v * 1e4).toFixed(0) + 'e-4';
