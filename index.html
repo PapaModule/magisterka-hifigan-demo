@@ -73,7 +73,8 @@
       flex-shrink: 0;
     }
 
-    #nav-tabs { display: flex; gap: .2rem; align-items: center; }
+    #nav-tabs { display: flex; gap: .2rem; align-items: center; flex: 1; }
+    #nav-tabs .tab-btn { flex: 1; justify-content: center; }
 
     .tab-btn {
       position: relative;
@@ -217,7 +218,7 @@
     .audio-training-nav::-webkit-scrollbar { display: none; }
     .audio-training-nav .nav-inner {
       padding: .55rem 1.2rem;
-      display: flex; align-items: center; gap: .35rem; flex-wrap: wrap;
+      display: flex; align-items: center; gap: .35rem;
     }
 
     .audio-nav-label {
@@ -233,7 +234,8 @@
       border: 1px solid transparent;
       background: none; cursor: pointer; color: var(--muted);
       white-space: nowrap; transition: all .15s;
-      display: flex; align-items: center; gap: .35rem;
+      display: flex; align-items: center; justify-content: center; gap: .35rem;
+      flex: 1;
     }
     .training-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
     .training-btn.active {
@@ -256,6 +258,11 @@
       padding: .3rem 1.2rem;
       display: flex; align-items: center; gap: .25rem;
     }
+
+    #table-training-selector {
+      display: flex; gap: .35rem; margin: .75rem 0;
+    }
+    #table-training-selector .training-btn { font-size: .55rem; }
 
     /* ── Epoch / main content ────────────────────────────── */
     #epoch-view { min-height: 60vh; display: none; }
@@ -954,7 +961,7 @@
           Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem.
         </p>
         <p class="about-p" style="margin-top:1.2rem;">Wybierz trening żeby zobaczyć historię strat:</p>
-        <div id="table-training-selector" style="display:flex;gap:.35rem;flex-wrap:wrap;margin:.75rem 0;"></div>
+        <div id="table-training-selector"></div>
         <div class="about-section-title" id="loss-section-title" style="font-size:.7rem;margin:.5rem 0 .5rem;">Postęp treningu</div>
         <table class="about-table">
           <thead>
@@ -1304,7 +1311,6 @@ function buildAudioTrainingNav() {
   container.innerHTML = '';
   const inner = document.createElement('div');
   inner.className = 'nav-inner';
-  inner.innerHTML = '<span class="audio-nav-label">Trening</span>';
   TRAININGS.forEach(({ key, label, color }) => {
     const btn = document.createElement('button');
     btn.className = 'training-btn' + (key === _currentExp ? ' active' : '');
@@ -1380,7 +1386,6 @@ function buildTableSelector() {
   TRAININGS.forEach(({ key, label, color }) => {
     const btn = document.createElement('button');
     btn.className = 'training-btn' + (key === _tableExp ? ' active' : '');
-    btn.style.fontSize = '.55rem';
     btn.innerHTML = `<span class="t-dot" style="background:${color}"></span>${label.replace('Trening ', 'T')}`;
     btn.onclick = () => switchTableExp(key);
     container.appendChild(btn);
