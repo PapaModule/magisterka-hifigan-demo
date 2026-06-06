@@ -196,75 +196,56 @@
     }
     @keyframes fadeIn { to { opacity: 1; } }
 
-    /* ── Page layout: sidebar + main ────────────────────── */
-    .page-layout {
-      display: flex;
-      min-height: 80vh;
+    /* ── Page layout ────────────────────────────────────── */
+    .page-layout { min-height: 80vh; }
+    .main-area { min-width: 0; overflow-x: hidden; }
+
+    /* ── Audio view internal nav ─────────────────────────── */
+    #view-audio { display: none; }
+    #view-audio.active { display: block; }
+
+    .audio-training-nav {
+      border-bottom: 1px solid var(--border);
+      padding: .55rem 1.2rem;
+      display: flex; align-items: center; gap: .35rem;
+      overflow-x: auto; scrollbar-width: none;
+      background: var(--surface); flex-wrap: wrap;
+    }
+    .audio-training-nav::-webkit-scrollbar { display: none; }
+
+    .audio-nav-label {
+      font-size: .44rem; letter-spacing: .16em; text-transform: uppercase;
+      color: var(--muted); opacity: .65; white-space: nowrap;
+      margin-right: .25rem; flex-shrink: 0;
     }
 
-    .sidebar {
-      width: 152px;
-      min-width: 136px;
-      flex-shrink: 0;
-      border-right: 1px solid var(--border);
-      padding: 1.4rem .55rem 2rem .7rem;
-      position: sticky;
-      top: 52px;
-      height: calc(100vh - 52px);
-      overflow-y: auto;
-      scrollbar-width: none;
-      background: var(--bg);
-    }
-    .sidebar::-webkit-scrollbar { display: none; }
-
-    .sidebar-label {
-      font-size: .44rem;
-      letter-spacing: .16em;
-      text-transform: uppercase;
-      color: var(--muted);
-      padding: 0 .45rem .85rem;
-      opacity: .65;
-    }
-
-    .sidebar-exp {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-      padding: .5rem .55rem;
-      border-radius: 7px;
-      border: 1px solid transparent;
-      background: none;
-      cursor: pointer;
-      text-align: left;
-      margin-bottom: 2px;
-      transition: all .18s;
-      color: var(--muted);
+    .training-btn {
       font-family: 'JetBrains Mono', monospace;
+      font-size: .62rem; font-weight: 400;
+      padding: .32rem .7rem; border-radius: 6px;
+      border: 1px solid transparent;
+      background: none; cursor: pointer; color: var(--muted);
+      white-space: nowrap; transition: all .15s;
+      display: flex; align-items: center; gap: .35rem;
     }
-    .sidebar-exp:hover { color: var(--text); background: rgba(255,255,255,.04); }
-    .sidebar-exp.active {
-      color: var(--text);
-      background: rgba(255,255,255,.06);
+    .training-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .training-btn.active {
+      color: var(--text); background: rgba(255,255,255,.06);
       border-color: var(--border);
     }
-
-    .sidebar-exp-row { display: flex; align-items: center; gap: .45rem; }
-
-    .sidebar-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%; flex-shrink: 0;
+    .training-btn .t-dot {
+      width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
     }
 
-    .sidebar-exp-name { font-size: .63rem; font-weight: 400; letter-spacing: .04em; }
-
-    .sidebar-exp-info {
-      font-size: .44rem; color: var(--muted);
-      margin-top: .14rem; padding-left: 1.05rem;
-      letter-spacing: .02em; opacity: .75;
+    .audio-epoch-nav {
+      border-bottom: 1px solid var(--border);
+      padding: .3rem 1.2rem;
+      display: none; align-items: center; gap: .25rem;
+      overflow-x: auto; scrollbar-width: none;
+      background: var(--bg);
     }
-
-    .main-area { flex: 1; min-width: 0; overflow-x: hidden; }
+    .audio-epoch-nav.visible { display: flex; }
+    .audio-epoch-nav::-webkit-scrollbar { display: none; }
 
     /* ── Epoch / main content ────────────────────────────── */
     #epoch-view { min-height: 60vh; display: none; }
@@ -496,36 +477,6 @@
 
     /* ── Responsive ─────────────────────────────────────── */
     @media (max-width: 640px) {
-      .page-layout { flex-direction: column; }
-
-      .sidebar {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        width: 100%;
-        height: auto;
-        position: static;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-        padding: .4rem .6rem;
-        overflow-x: auto;
-        scrollbar-width: none;
-        gap: .3rem;
-        background: var(--surface);
-      }
-      .sidebar::-webkit-scrollbar { display: none; }
-      .sidebar-label { display: none; }
-      .sidebar-exp {
-        flex-direction: row;
-        align-items: center;
-        white-space: nowrap;
-        flex-shrink: 0;
-        width: auto;
-        padding: .3rem .6rem;
-        margin-bottom: 0;
-      }
-      .sidebar-exp-info { display: none; }
-
       .compare { grid-template-columns: 1fr; }
       .col-head.left { border-right: none; }
       .cell.left { border-right: none; }
@@ -562,11 +513,6 @@
 
 <!-- ── Page layout ───────────────────────────────────────── -->
 <div class="page-layout">
-
-  <!-- Sidebar: selektor eksperymentów (pionowy) -->
-  <aside class="sidebar" id="sidebar"><!-- wypełniane przez JS --></aside>
-
-  <!-- Obszar główny -->
   <div class="main-area">
 
     <!-- O projekcie ─────────────────────────────────────── -->
@@ -995,8 +941,9 @@
         <p class="about-p">
           Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem.
         </p>
-        <p class="about-p" style="margin-top:1.2rem;">Poniżej dane z aktualnie wybranego eksperymentu (wybierz z panelu po lewej):</p>
-        <div class="about-section-title" id="loss-section-title" style="font-size:.7rem;margin:1rem 0 .5rem;">Postęp treningu</div>
+        <p class="about-p" style="margin-top:1.2rem;">Wybierz trening żeby zobaczyć historię strat:</p>
+        <div id="table-training-selector" style="display:flex;gap:.35rem;flex-wrap:wrap;margin:.75rem 0;"></div>
+        <div class="about-section-title" id="loss-section-title" style="font-size:.7rem;margin:.5rem 0 .5rem;">Postęp treningu</div>
         <table class="about-table">
           <thead>
             <tr><th>Epoka</th><th>loss_D</th><th>loss_G</th><th>adv</th><th>fm</th><th>sd</th><th>Czas</th></tr>
@@ -1013,7 +960,12 @@
     </div><!-- /view-model -->
 
     <!-- Widok epoki (wypełniany przez JS) -->
-    <div id="epoch-view"></div>
+    <!-- AUDIO ───────────────────────────────────────────── -->
+    <div id="view-audio">
+      <div class="audio-training-nav" id="audio-training-nav"><!-- wypełniane przez JS --></div>
+      <div class="audio-epoch-nav" id="audio-epoch-nav"><!-- wypełniane przez JS --></div>
+      <div id="epoch-view"></div>
+    </div><!-- /view-audio -->
 
   </div><!-- /main-area -->
 </div><!-- /page-layout -->
@@ -1026,9 +978,20 @@
 
 <script>
 let _manifest = null;
-let _currentExp = null;
+let _currentExp = null;   // aktualny trening w widoku AUDIO (napędza akcent)
+let _tableExp  = null;    // aktualny trening w tabeli (niezależny od AUDIO)
+
+const TRAININGS = [
+  { key: 'exp4', label: 'Trening 4', color: '#f59e0b', info: 'E50 · zakończony' },
+  { key: 'exp5', label: 'Trening 5', color: '#22d3ee', info: 'E93 · zakończony' },
+  { key: 'exp6', label: 'Trening 6', color: '#60a5fa', info: 'E15 · zatrzymany' },
+  { key: 'exp7', label: 'Trening 7', color: '#a78bfa', info: 'E10 · zatrzymany' },
+  { key: 'exp8', label: 'Trening 8', color: '#fb7185', info: 'E4 · collapse'    },
+  { key: 'exp9', label: 'Trening 9', color: '#34d399', info: 'aktywny'           },
+];
 
 function getExp() { return _currentExp && _manifest ? _manifest.experiments[_currentExp] : null; }
+function getTableExp() { return _tableExp && _manifest ? _manifest.experiments[_tableExp] : null; }
 
 const REAL_FILES = {
   normal: [
@@ -1121,12 +1084,12 @@ function buildClassSection(cfg, epochNum) {
 
 function buildParamsCard(epochNum, data, label) {
   const fmt = v => v != null ? v : '—';
-  const expLabel = _currentExp === 'exp4' ? 'Exp 4 · bez normalizacji'
-                 : _currentExp === 'exp5' ? 'Exp 5 · normalizacja RMS'
-                 : _currentExp === 'exp6' ? 'Exp 6 · LP 800 Hz + normalizacja RMS'
-                 : _currentExp === 'exp7' ? 'Exp 7 · LP 1200 Hz + normalizacja RMS'
-                 : _currentExp === 'exp8' ? 'Exp 8 · LP 800 Hz + LAMBDA_SD=1.0'
-                 : 'Exp 9 · LP 600 Hz tylko normal';
+  const expLabel = _currentExp === 'exp4' ? 'Trening 4 · bez normalizacji'
+                 : _currentExp === 'exp5' ? 'Trening 5 · normalizacja RMS'
+                 : _currentExp === 'exp6' ? 'Trening 6 · LP 800 Hz + normalizacja RMS'
+                 : _currentExp === 'exp7' ? 'Trening 7 · LP 1200 Hz + normalizacja RMS'
+                 : _currentExp === 'exp8' ? 'Trening 8 · LP 800 Hz + LAMBDA_SD=1.0'
+                 : 'Trening 9 · LP 600 Hz tylko normal';
   const title = label || `Parametry treningu · ${expLabel} · Epoka ${epochNum} / 200`;
   const normRow = _currentExp === 'exp5'
     ? `<div class="param"><div class="param-key">Normalizacja RMS</div><div class="param-val accent">−20 dBFS</div></div>`
@@ -1139,24 +1102,9 @@ function buildParamsCard(epochNum, data, label) {
     : _currentExp === 'exp9'
     ? `<div class="param"><div class="param-key">Preprocessing</div><div class="param-val accent">LP 600 Hz (tylko normal) → −20 dBFS RMS</div></div>`
     : '';
-  let lrRow;
-  if (_currentExp === 'exp4') {
-    lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`;
-  } else {
-    const exp = _manifest && _manifest.experiments && _manifest.experiments[_currentExp];
-    const schedEpochs = (exp && exp.scheduler_epochs) || (_currentExp === 'exp5' ? [44, 59, 79] : []);
-    const drops = schedEpochs.filter(e => e < epochNum).length;
-    const factor = Math.pow(0.5, drops);
-    const fmtLR = v => {
-      if (v >= 1e-4) return (v * 1e4).toFixed(0) + 'e-4';
-      if (v >= 1e-5) return (v * 1e5).toFixed(1).replace(/\.0$/, '') + 'e-5';
-      return v.toExponential(2);
-    };
-    const lrG = fmtLR(2e-4 * factor);
-    const lrD = fmtLR(1e-4 * factor);
-    const suffix = schedEpochs.length > 0 && drops > 0 ? ` <span style="color:var(--error)">↓×${drops}</span>` : ' · plateau→×0.5';
-    lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">${lrG} / ${lrD}${suffix}</div></div>`;
-  }
+  const lrRow = _currentExp === 'exp4'
+    ? `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · stały</div></div>`
+    : `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val">2e-4 / 1e-4 · plateau→×0.5</div></div>`;
   return `
   <div class="params-card">
     <div class="card-label">${title}</div>
@@ -1212,38 +1160,6 @@ function renderEpoch(epochNum, data, hasSamples) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function setActive(isLatest, epochNum) {
-  document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn => {
-    const isAbout    = btn.dataset.tab === 'about';
-    const isLatestBtn = btn.classList.contains('tab-latest');
-    if (isAbout) { btn.classList.remove('active'); return; }
-    btn.classList.toggle('active',
-      isLatest ? isLatestBtn : (!isLatestBtn && Number(btn.dataset.epoch) === epochNum)
-    );
-  });
-  document.getElementById('view-about').classList.remove('active');
-  document.getElementById('view-model').classList.remove('active');
-  document.getElementById('epoch-view').style.display = 'block';
-}
-
-function showAbout() {
-  document.getElementById('view-about').classList.add('active');
-  document.getElementById('view-model').classList.remove('active');
-  document.getElementById('epoch-view').style.display = 'none';
-  document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.tab === 'about')
-  );
-}
-
-function showModel() {
-  document.getElementById('view-about').classList.remove('active');
-  document.getElementById('view-model').classList.add('active');
-  document.getElementById('epoch-view').style.display = 'none';
-  document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn =>
-    btn.classList.toggle('active', btn.dataset.tab === 'model')
-  );
-}
-
 function showMilestone(epochNum) {
   const exp = getExp();
   renderEpoch(epochNum, exp.epochs[String(epochNum)], true);
@@ -1290,30 +1206,7 @@ function showLatest() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-function buildSidebar() {
-  const EXPS = [
-    { key: 'exp4', label: 'Exp 4', color: 'var(--murmur)', info: 'E50 · zakończony' },
-    { key: 'exp5', label: 'Exp 5', color: 'var(--normal)', info: 'E93 · zakończony' },
-    { key: 'exp6', label: 'Exp 6', color: '#60a5fa',       info: 'E15 · zatrzymany' },
-    { key: 'exp7', label: 'Exp 7', color: '#c084fc',       info: 'E10 · zatrzymany' },
-    { key: 'exp8', label: 'Exp 8', color: '#fbbf24',       info: 'E4 · collapse' },
-    { key: 'exp9', label: 'Exp 9', color: '#34d399',       info: 'aktywny' },
-  ];
-  const container = document.getElementById('sidebar');
-  container.innerHTML = `<div class="sidebar-label">Eksperymenty</div>`;
-  EXPS.forEach(({ key, label, color, info }) => {
-    const btn = document.createElement('button');
-    btn.className = 'sidebar-exp' + (key === _currentExp ? ' active' : '');
-    btn.innerHTML = `
-      <div class="sidebar-exp-row">
-        <span class="sidebar-dot" style="background:${color}${key === _currentExp ? ';box-shadow:0 0 5px ' + color : ''}"></span>
-        <span class="sidebar-exp-name">${label}</span>
-      </div>
-      <div class="sidebar-exp-info">${info}</div>`;
-    btn.onclick = () => switchExp(key);
-    container.appendChild(btn);
-  });
-}
+/* ── Nawigacja górna ─────────────────────────────────────── */
 
 function buildNav() {
   const container = document.getElementById('nav-tabs');
@@ -1329,17 +1222,72 @@ function buildNav() {
   const btnModel = document.createElement('button');
   btnModel.className = 'tab-btn tab-model';
   btnModel.dataset.tab = 'model';
-  btnModel.innerHTML = 'Jak działa model';
+  btnModel.innerHTML = 'Jak działa sieć';
   btnModel.onclick = () => showModel();
   container.appendChild(btnModel);
 
-  if (!_currentExp) return;
+  const btnAudio = document.createElement('button');
+  btnAudio.className = 'tab-btn tab-audio';
+  btnAudio.dataset.tab = 'audio';
+  btnAudio.innerHTML = 'AUDIO';
+  btnAudio.onclick = () => showAudio();
+  container.appendChild(btnAudio);
+}
 
-  const sep = document.createElement('div');
-  sep.className = 'nav-divider';
-  container.appendChild(sep);
+function setNavActive(tabKey) {
+  document.querySelectorAll('#nav-tabs .tab-btn').forEach(btn =>
+    btn.classList.toggle('active', btn.dataset.tab === tabKey)
+  );
+}
 
+/* ── Widoki ──────────────────────────────────────────────── */
+
+function showAbout() {
+  document.getElementById('view-about').classList.add('active');
+  document.getElementById('view-model').classList.remove('active');
+  document.getElementById('view-audio').classList.remove('active');
+  document.getElementById('epoch-view').style.display = 'none';
+  setNavActive('about');
+}
+
+function showModel() {
+  document.getElementById('view-about').classList.remove('active');
+  document.getElementById('view-model').classList.add('active');
+  document.getElementById('view-audio').classList.remove('active');
+  document.getElementById('epoch-view').style.display = 'none';
+  setNavActive('model');
+}
+
+function showAudio() {
+  document.getElementById('view-about').classList.remove('active');
+  document.getElementById('view-model').classList.remove('active');
+  document.getElementById('view-audio').classList.add('active');
+  setNavActive('audio');
+  buildAudioTrainingNav();
+  if (_currentExp) buildAudioEpochNav();
+}
+
+/* ── Audio view — nawigacja wewnętrzna ───────────────────── */
+
+function buildAudioTrainingNav() {
+  const container = document.getElementById('audio-training-nav');
+  container.innerHTML = '<span class="audio-nav-label">Trening</span>';
+  TRAININGS.forEach(({ key, label, color }) => {
+    const btn = document.createElement('button');
+    btn.className = 'training-btn' + (key === _currentExp ? ' active' : '');
+    btn.innerHTML = `<span class="t-dot" style="background:${color}"></span>${label}`;
+    btn.onclick = () => selectAudioTraining(key);
+    container.appendChild(btn);
+  });
+}
+
+function buildAudioEpochNav() {
   const exp = getExp();
+  const epochNav = document.getElementById('audio-epoch-nav');
+  if (!exp) { epochNav.classList.remove('visible'); return; }
+  epochNav.classList.add('visible');
+  epochNav.innerHTML = '';
+
   const milestones = Object.keys(exp.epochs).map(Number).sort((a, b) => a - b);
   milestones.forEach(ep => {
     const btn = document.createElement('button');
@@ -1347,32 +1295,72 @@ function buildNav() {
     btn.dataset.epoch = ep;
     btn.innerHTML = `Epoka <span class="tab-epoch-num">${ep}</span>`;
     btn.onclick = () => showMilestone(ep);
-    container.appendChild(btn);
+    epochNav.appendChild(btn);
   });
 
-  const ep  = exp.latest_epoch || 0;
-  const btn = document.createElement('button');
-  btn.className = 'tab-btn tab-latest';
-  btn.dataset.epoch = ep;
-  const latestLabel = ep > 0 ? `E${ep}` : '…';
-  btn.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
-  btn.onclick = () => showLatest();
-  container.appendChild(btn);
+  const latestEp = exp.latest_epoch || 0;
+  const btnLatest = document.createElement('button');
+  btnLatest.className = 'tab-btn tab-latest';
+  btnLatest.dataset.epoch = latestEp;
+  const latestLabel = latestEp > 0 ? `E${latestEp}` : '…';
+  btnLatest.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
+  btnLatest.onclick = () => showLatest();
+  epochNav.appendChild(btnLatest);
+}
+
+function selectAudioTraining(expKey) {
+  _currentExp = expKey;
+  applyAccentColor();
+  buildAudioTrainingNav();
+  buildAudioEpochNav();
+  showLatest();
+}
+
+function setActive(isLatest, epochNum) {
+  document.querySelectorAll('#audio-epoch-nav .tab-btn').forEach(btn => {
+    const isLatestBtn = btn.classList.contains('tab-latest');
+    btn.classList.toggle('active',
+      isLatest ? isLatestBtn : (!isLatestBtn && Number(btn.dataset.epoch) === epochNum)
+    );
+  });
+  document.getElementById('epoch-view').style.display = 'block';
+}
+
+/* ── Tabela postępu treningu ─────────────────────────────── */
+
+function buildTableSelector() {
+  const container = document.getElementById('table-training-selector');
+  if (!container) return;
+  container.innerHTML = '';
+  TRAININGS.forEach(({ key, label, color }) => {
+    const btn = document.createElement('button');
+    btn.className = 'training-btn' + (key === _tableExp ? ' active' : '');
+    btn.style.fontSize = '.55rem';
+    btn.innerHTML = `<span class="t-dot" style="background:${color}"></span>${label.replace('Trening ', 'T')}`;
+    btn.onclick = () => switchTableExp(key);
+    container.appendChild(btn);
+  });
+}
+
+function switchTableExp(expKey) {
+  _tableExp = expKey;
+  buildTableSelector();
+  buildLossHistory();
 }
 
 function buildLossHistory() {
-  const exp = getExp();
+  const exp = getTableExp();
   if (!exp) {
     const tbody = document.getElementById('loss-history-body');
-    if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);font-size:.6rem;letter-spacing:.06em;">Wybierz eksperyment z panelu po lewej</td></tr>';
+    if (tbody) tbody.innerHTML = '<tr><td colspan="7" style="color:var(--muted);font-size:.6rem;letter-spacing:.06em;">Wybierz trening z listy powyżej</td></tr>';
     const titleEl = document.getElementById('loss-section-title');
     if (titleEl) titleEl.textContent = 'Postęp treningu';
     return;
   }
   const all = exp.all_epochs || {};
   const epochs = Object.keys(all).map(Number).sort((a, b) => a - b);
-  const SLOW_CUTOFF = _currentExp === 'exp4' ? 3 : 0;
-  const SCHEDULER_EPOCHS = exp.scheduler_epochs || (_currentExp === 'exp5' ? [44, 59, 79] : []);
+  const SLOW_CUTOFF = _tableExp === 'exp4' ? 3 : 0;
+  const SCHEDULER_EPOCHS = _tableExp === 'exp5' ? [44, 59, 79] : [];
   const rows = epochs.map(ep => {
     const d = all[String(ep)];
     const mins = Math.round(d.time_s / 60);
@@ -1392,58 +1380,32 @@ function buildLossHistory() {
   const tbody = document.getElementById('loss-history-body');
   if (tbody) tbody.innerHTML = rows || '<tr><td colspan="7" style="color:var(--muted)">Brak danych</td></tr>';
   const note = document.getElementById('slow-epochs-note');
-  if (note) note.style.display = _currentExp === 'exp4' ? '' : 'none';
+  if (note) note.style.display = _tableExp === 'exp4' ? '' : 'none';
   const schedNote = document.getElementById('scheduler-note');
-  if (schedNote) schedNote.style.display = SCHEDULER_EPOCHS.length > 0 ? 'block' : 'none';
+  if (schedNote) schedNote.style.display = (_tableExp === 'exp5' || _tableExp === 'exp6') ? '' : 'none';
   const titleEl = document.getElementById('loss-section-title');
   if (titleEl) {
-    const names = { exp4:'Exp 4', exp5:'Exp 5', exp6:'Exp 6', exp7:'Exp 7', exp8:'Exp 8', exp9:'Exp 9' };
-    titleEl.textContent = 'Postęp treningu — ' + (names[_currentExp] || _currentExp);
+    const t = TRAININGS.find(t => t.key === _tableExp);
+    titleEl.textContent = 'Postęp treningu — ' + (t ? t.label : _tableExp);
   }
 }
 
-function switchExp(expKey) {
-  _currentExp = expKey;
-  applyAccentColor();
-  buildSidebar();
-  buildNav();
-  buildLossHistory();
-}
-
-function buildNavAboutOnly() {
-  const container = document.getElementById('nav-tabs');
-  container.innerHTML = '';
-
-  const btnAbout = document.createElement('button');
-  btnAbout.className = 'tab-btn tab-about active';
-  btnAbout.dataset.tab = 'about';
-  btnAbout.innerHTML = 'O projekcie';
-  btnAbout.onclick = () => showAbout();
-  container.appendChild(btnAbout);
-
-  const btnModel = document.createElement('button');
-  btnModel.className = 'tab-btn tab-model';
-  btnModel.dataset.tab = 'model';
-  btnModel.innerHTML = 'Jak działa model';
-  btnModel.onclick = () => showModel();
-  container.appendChild(btnModel);
-}
+/* ── Init ────────────────────────────────────────────────── */
 
 async function init() {
-  // Pokaż stronę natychmiast — sidebar i O projekcie nie wymagają manifestu
-  buildSidebar();
-  buildNavAboutOnly();
+  buildNav();
   showAbout();
 
   try {
     const r = await fetch(`manifest.json?t=${Date.now()}`);
     _manifest = await r.json();
+    buildTableSelector();
     buildLossHistory();
   } catch (_) {
-    // manifest niedostępny (file://) — tabele strat pozostają puste
     const tbody = document.getElementById('loss-history-body');
     if (tbody) tbody.innerHTML =
       '<tr><td colspan="7" style="color:var(--muted);font-size:.6rem;">Dane dostępne po otwarciu przez serwer HTTP</td></tr>';
+    buildTableSelector();
   }
 }
 
