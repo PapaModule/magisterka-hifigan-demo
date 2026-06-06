@@ -965,7 +965,7 @@
           </tbody>
         </table>
         <p class="about-p" id="slow-epochs-note" style="display:none;">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
-        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — epoki, po których scheduler obniżył LR (ReduceLROnPlateau).</p>
+        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — pierwsza epoka z obniżonym LR (ReduceLROnPlateau).</p>
       </div>
 
     </div><!-- /about-wrap -->
@@ -1131,7 +1131,9 @@ function buildParamsCard(epochNum, data, label) {
   const { lrG, lrD, fired } = computeLRAtEpoch(epochNum);
   const lrVal = _currentExp === 'exp4'
     ? '2e-4 / 1e-4 · stały'
-    : `${fmtLR(lrG)} / ${fmtLR(lrD)}`;
+    : fired > 0
+    ? `2e-4 → ${fmtLR(lrG)} / 1e-4 → ${fmtLR(lrD)}`
+    : '2e-4 / 1e-4';
   const lrRow = `<div class="param"><div class="param-key">LR_G / LR_D</div><div class="param-val ${fired > 0 ? 'accent' : ''}">${lrVal}</div></div>`;
   return `
   <div class="params-card">
@@ -1412,7 +1414,7 @@ function buildLossHistory() {
     const timeStr = h > 0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m`;
     const slow = ep <= SLOW_CUTOFF ? ' class="muted"' : '';
     const note = ep <= SLOW_CUTOFF ? ' *' : '';
-    const schedulerClass = SCHEDULER_EPOCHS.includes(ep) ? ' class="scheduler-fired"' : '';
+    const schedulerClass = SCHEDULER_EPOCHS.map(e => e + 1).includes(ep) ? ' class="scheduler-fired"' : '';
     return `<tr${schedulerClass}>
       <td>${ep}</td>
       <td>${d.loss_D}</td><td>${d.loss_G}</td>
