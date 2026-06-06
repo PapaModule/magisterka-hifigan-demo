@@ -42,14 +42,18 @@
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       display: flex;
-      align-items: center;
-      padding: 0 1.2rem;
+      justify-content: center;
       height: 52px;
-      gap: 0;
       overflow-x: auto;
       scrollbar-width: none;
     }
     .topnav::-webkit-scrollbar { display: none; }
+
+    .nav-inner {
+      display: flex; align-items: center; gap: 0;
+      max-width: 1040px; width: 100%; height: 100%;
+      padding: 0 1.2rem;
+    }
 
     .nav-brand {
       font-family: 'Cormorant Garamond', serif;
@@ -206,12 +210,15 @@
 
     .audio-training-nav {
       border-bottom: 1px solid var(--border);
-      padding: .55rem 1.2rem;
-      display: flex; align-items: center; gap: .35rem;
+      display: flex; justify-content: center;
       overflow-x: auto; scrollbar-width: none;
-      background: var(--surface); flex-wrap: wrap;
+      background: var(--surface);
     }
     .audio-training-nav::-webkit-scrollbar { display: none; }
+    .audio-training-nav .nav-inner {
+      padding: .55rem 1.2rem;
+      display: flex; align-items: center; gap: .35rem; flex-wrap: wrap;
+    }
 
     .audio-nav-label {
       font-size: .44rem; letter-spacing: .16em; text-transform: uppercase;
@@ -239,13 +246,16 @@
 
     .audio-epoch-nav {
       border-bottom: 1px solid var(--border);
-      padding: .3rem 1.2rem;
-      display: none; align-items: center; gap: .25rem;
+      display: none; justify-content: center;
       overflow-x: auto; scrollbar-width: none;
       background: var(--bg);
     }
     .audio-epoch-nav.visible { display: flex; }
     .audio-epoch-nav::-webkit-scrollbar { display: none; }
+    .audio-epoch-nav .nav-inner {
+      padding: .3rem 1.2rem;
+      display: flex; align-items: center; gap: .25rem;
+    }
 
     /* ── Epoch / main content ────────────────────────────── */
     #epoch-view { min-height: 60vh; display: none; }
@@ -490,9 +500,11 @@
 
 <!-- ── Top nav ───────────────────────────────────────────── -->
 <nav class="topnav">
-  <span class="nav-brand">cHiFi-GAN &nbsp;<em>·</em>&nbsp; dźwięki serca</span>
-  <div class="nav-divider"></div>
-  <div id="nav-tabs"><!-- wypełniane przez JS --></div>
+  <div class="nav-inner">
+    <span class="nav-brand">cHiFi-GAN &nbsp;<em>·</em>&nbsp; dźwięki serca</span>
+    <div class="nav-divider"></div>
+    <div id="nav-tabs"><!-- wypełniane przez JS --></div>
+  </div>
 </nav>
 
 <!-- ── Header ───────────────────────────────────────────── -->
@@ -1270,14 +1282,18 @@ function showAudio() {
 
 function buildAudioTrainingNav() {
   const container = document.getElementById('audio-training-nav');
-  container.innerHTML = '<span class="audio-nav-label">Trening</span>';
+  container.innerHTML = '';
+  const inner = document.createElement('div');
+  inner.className = 'nav-inner';
+  inner.innerHTML = '<span class="audio-nav-label">Trening</span>';
   TRAININGS.forEach(({ key, label, color }) => {
     const btn = document.createElement('button');
     btn.className = 'training-btn' + (key === _currentExp ? ' active' : '');
     btn.innerHTML = `<span class="t-dot" style="background:${color}"></span>${label}`;
     btn.onclick = () => selectAudioTraining(key);
-    container.appendChild(btn);
+    inner.appendChild(btn);
   });
+  container.appendChild(inner);
 }
 
 function buildAudioEpochNav() {
@@ -1286,6 +1302,8 @@ function buildAudioEpochNav() {
   if (!exp) { epochNav.classList.remove('visible'); return; }
   epochNav.classList.add('visible');
   epochNav.innerHTML = '';
+  const inner = document.createElement('div');
+  inner.className = 'nav-inner';
 
   const milestones = Object.keys(exp.epochs).map(Number).sort((a, b) => a - b);
   milestones.forEach(ep => {
@@ -1294,7 +1312,7 @@ function buildAudioEpochNav() {
     btn.dataset.epoch = ep;
     btn.innerHTML = `Epoka <span class="tab-epoch-num">${ep}</span>`;
     btn.onclick = () => showMilestone(ep);
-    epochNav.appendChild(btn);
+    inner.appendChild(btn);
   });
 
   if (_currentExp === 'exp9') {
@@ -1305,8 +1323,10 @@ function buildAudioEpochNav() {
     const latestLabel = latestEp > 0 ? `E${latestEp}` : '…';
     btnLatest.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
     btnLatest.onclick = () => showLatest();
-    epochNav.appendChild(btnLatest);
+    inner.appendChild(btnLatest);
   }
+
+  epochNav.appendChild(inner);
 }
 
 function selectAudioTraining(expKey) {
@@ -1314,7 +1334,12 @@ function selectAudioTraining(expKey) {
   applyAccentColor();
   buildAudioTrainingNav();
   buildAudioEpochNav();
-  showLatest();
+  const exp = getExp();
+  if (exp) {
+    const milestones = Object.keys(exp.epochs).map(Number).sort((a, b) => a - b);
+    if (milestones.length > 0) showMilestone(milestones[milestones.length - 1]);
+    else showLatest();
+  }
 }
 
 function setActive(isLatest, epochNum) {
