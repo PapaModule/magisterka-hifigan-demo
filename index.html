@@ -18,7 +18,7 @@
       --normal:    #4ade80;
       --murmur:    #fb923c;
       --extra:     #c084fc;
-      --accent:    #34d399;
+      --accent:    #f87171;
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -258,15 +258,18 @@
     }
     .epoch-scroll-btn {
       flex-shrink: 0;
-      background: none; border: 1px solid var(--border);
-      color: var(--muted); border-radius: 5px;
+      background: none;
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      color: var(--accent); border-radius: 5px;
       width: 1.6rem; height: 1.6rem;
       display: flex; align-items: center; justify-content: center;
       cursor: pointer; font-size: .8rem; transition: all .15s;
       padding: 0;
     }
-    .epoch-scroll-btn:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,.25); }
-    .epoch-scroll-btn:disabled { opacity: .25; cursor: default; }
+    .epoch-scroll-btn:hover:not(:disabled) {
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+    }
+    .epoch-scroll-btn:disabled { opacity: .2; cursor: default; }
     .epoch-scroll-track {
       flex: 1; overflow-x: scroll; scrollbar-width: none;
       display: flex; align-items: center; gap: .25rem;
@@ -1016,12 +1019,12 @@ let _currentExp = null;   // aktualny trening w widoku AUDIO (napędza akcent)
 let _tableExp  = null;    // aktualny trening w tabeli (niezależny od AUDIO)
 
 const TRAININGS = [
-  { key: 'exp4', label: 'Trening 4', color: '#f59e0b', info: 'E50 · zakończony' },
-  { key: 'exp5', label: 'Trening 5', color: '#22d3ee', info: 'E93 · zakończony' },
-  { key: 'exp6', label: 'Trening 6', color: '#60a5fa', info: 'E15 · zatrzymany' },
-  { key: 'exp7', label: 'Trening 7', color: '#a78bfa', info: 'E10 · zatrzymany' },
-  { key: 'exp8', label: 'Trening 8', color: '#fb7185', info: 'E4 · collapse'    },
-  { key: 'exp9', label: 'Trening 9', color: '#34d399', info: 'aktywny'           },
+  { key: 'exp4', label: 'Trening 4', color: '#818cf8', info: 'E50 · zakończony' },
+  { key: 'exp5', label: 'Trening 5', color: '#38bdf8', info: 'E93 · zakończony' },
+  { key: 'exp6', label: 'Trening 6', color: '#4ade80', info: 'E15 · zatrzymany' },
+  { key: 'exp7', label: 'Trening 7', color: '#facc15', info: 'E10 · zatrzymany' },
+  { key: 'exp8', label: 'Trening 8', color: '#fb923c', info: 'E4 · collapse'    },
+  { key: 'exp9', label: 'Trening 9', color: '#f87171', info: 'aktywny'           },
 ];
 
 function getExp() { return _currentExp && _manifest ? _manifest.experiments[_currentExp] : null; }
@@ -1180,12 +1183,8 @@ function buildParamsCard(epochNum, data, label) {
 }
 
 function expColor() {
-  return _currentExp === 'exp4' ? '#f59e0b'   /* amber  — było orange jak murmur */
-       : _currentExp === 'exp5' ? '#22d3ee'   /* cyan   — było green jak normal  */
-       : _currentExp === 'exp6' ? '#60a5fa'   /* blue                            */
-       : _currentExp === 'exp7' ? '#a78bfa'   /* violet — było purple jak extra  */
-       : _currentExp === 'exp8' ? '#fb7185'   /* rose   — było yellow            */
-       : '#34d399';                           /* emerald — exp9, default         */
+  const t = TRAININGS.find(t => t.key === _currentExp);
+  return t ? t.color : '#f87171';
 }
 
 function applyAccentColor() {
@@ -1208,6 +1207,7 @@ function renderEpoch(epochNum, data, hasSamples) {
     ${exp.label} · Epoka ${epochNum} / 200
   </div>
   ${buildParamsCard(epochNum, data)}
+  ${hasSamples ? '<p style="font-size:.6rem;color:var(--muted);letter-spacing:.05em;margin:-.4rem 0 1.2rem;">W każdej z klas wybrano po 4 <strong>losowe</strong> próbki.</p>' : ''}
   ${sections}
 </main>`;
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1252,6 +1252,7 @@ function showLatest() {
     ${exp.label} · Epoka ${ep} / 200
   </div>
   ${buildParamsCard(ep, hasSamples ? exp.epochs[String(ep)] : data)}
+  ${hasSamples ? '<p style="font-size:.6rem;color:var(--muted);letter-spacing:.05em;margin:-.4rem 0 1.2rem;">W każdej z klas wybrano po 4 <strong>losowe</strong> próbki.</p>' : ''}
   ${prevCard}
   ${sections}
 </main>`;
