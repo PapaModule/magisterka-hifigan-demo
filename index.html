@@ -249,15 +249,30 @@
     .audio-epoch-nav {
       border-bottom: 1px solid var(--border);
       display: none; justify-content: center;
-      overflow-x: auto; scrollbar-width: none;
       background: var(--bg);
     }
     .audio-epoch-nav.visible { display: flex; }
-    .audio-epoch-nav::-webkit-scrollbar { display: none; }
     .audio-epoch-nav .nav-inner {
       padding: .3rem 1.2rem;
-      display: flex; align-items: center; gap: .25rem;
+      display: flex; align-items: center; gap: .35rem;
     }
+    .epoch-scroll-btn {
+      flex-shrink: 0;
+      background: none; border: 1px solid var(--border);
+      color: var(--muted); border-radius: 5px;
+      width: 1.6rem; height: 1.6rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: .8rem; transition: all .15s;
+      padding: 0;
+    }
+    .epoch-scroll-btn:hover:not(:disabled) { color: var(--text); border-color: rgba(255,255,255,.25); }
+    .epoch-scroll-btn:disabled { opacity: .25; cursor: default; }
+    .epoch-scroll-track {
+      flex: 1; overflow-x: scroll; scrollbar-width: none;
+      display: flex; align-items: center; gap: .25rem;
+      scroll-behavior: smooth;
+    }
+    .epoch-scroll-track::-webkit-scrollbar { display: none; }
 
     #table-training-selector {
       display: flex; gap: .35rem; margin: .75rem 0;
@@ -1321,14 +1336,39 @@ function buildAudioTrainingNav() {
   container.appendChild(inner);
 }
 
+function updateEpochArrows() {
+  const track = document.getElementById('epoch-scroll-track');
+  const left  = document.getElementById('epoch-arrow-left');
+  const right = document.getElementById('epoch-arrow-right');
+  if (!track || !left || !right) return;
+  left.disabled  = track.scrollLeft <= 1;
+  right.disabled = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
+}
+
 function buildAudioEpochNav() {
   const exp = getExp();
   const epochNav = document.getElementById('audio-epoch-nav');
   if (!exp) { epochNav.classList.remove('visible'); return; }
   epochNav.classList.add('visible');
   epochNav.innerHTML = '';
+
   const inner = document.createElement('div');
   inner.className = 'nav-inner';
+
+  const leftBtn = document.createElement('button');
+  leftBtn.className = 'epoch-scroll-btn';
+  leftBtn.id = 'epoch-arrow-left';
+  leftBtn.innerHTML = '&#8249;';
+  leftBtn.disabled = true;
+
+  const track = document.createElement('div');
+  track.className = 'epoch-scroll-track';
+  track.id = 'epoch-scroll-track';
+
+  const rightBtn = document.createElement('button');
+  rightBtn.className = 'epoch-scroll-btn';
+  rightBtn.id = 'epoch-arrow-right';
+  rightBtn.innerHTML = '&#8250;';
 
   const milestones = Object.keys(exp.epochs).map(Number).sort((a, b) => a - b);
   milestones.forEach(ep => {
@@ -1337,7 +1377,7 @@ function buildAudioEpochNav() {
     btn.dataset.epoch = ep;
     btn.innerHTML = `Epoka <span class="tab-epoch-num">${ep}</span>`;
     btn.onclick = () => showMilestone(ep);
-    inner.appendChild(btn);
+    track.appendChild(btn);
   });
 
   if (_currentExp === 'exp9') {
@@ -1348,10 +1388,19 @@ function buildAudioEpochNav() {
     const latestLabel = latestEp > 0 ? `E${latestEp}` : '…';
     btnLatest.innerHTML = `<span class="tab-dot"></span>Najnowsze <span class="tab-badge">${latestLabel}</span>`;
     btnLatest.onclick = () => showLatest();
-    inner.appendChild(btnLatest);
+    track.appendChild(btnLatest);
   }
 
+  leftBtn.onclick  = () => { track.scrollLeft -= 200; };
+  rightBtn.onclick = () => { track.scrollLeft += 200; };
+  track.addEventListener('scroll', updateEpochArrows);
+
+  inner.appendChild(leftBtn);
+  inner.appendChild(track);
+  inner.appendChild(rightBtn);
   epochNav.appendChild(inner);
+
+  requestAnimationFrame(updateEpochArrows);
 }
 
 function selectAudioTraining(expKey) {
@@ -1450,6 +1499,7 @@ async function init() {
   try {
     const r = await fetch(`manifest.json?t=${Date.now()}`);
     _manifest = await r.json();
+    _tableExp = 'exp9';
     buildTableSelector();
     buildLossHistory();
   } catch (_) {
