@@ -1449,6 +1449,8 @@ function buildTableSelector() {
 
 function switchTableExp(expKey) {
   _tableExp = expKey;
+  _currentExp = expKey;
+  applyAccentColor();
   buildTableSelector();
   buildLossHistory();
 }
