@@ -1310,6 +1310,11 @@ function showModel() {
   document.getElementById('view-audio').classList.remove('active');
   document.getElementById('epoch-view').style.display = 'none';
   setNavActive('model');
+  if (_currentExp && _currentExp !== _tableExp) {
+    _tableExp = _currentExp;
+    buildTableSelector();
+    buildLossHistory();
+  }
 }
 
 function showAudio() {
@@ -1317,7 +1322,7 @@ function showAudio() {
   document.getElementById('view-model').classList.remove('active');
   document.getElementById('view-audio').classList.add('active');
   setNavActive('audio');
-  selectAudioTraining('exp9');
+  selectAudioTraining(_tableExp || 'exp9');
 }
 
 /* ── Audio view — nawigacja wewnętrzna ───────────────────── */
