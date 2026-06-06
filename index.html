@@ -468,11 +468,20 @@
     }
 
     /* data tables */
+    .table-scroll-wrap {
+      max-height: 33rem;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: .5rem;
+    }
     .about-table {
       width: 100%; border-collapse: collapse;
-      font-size: .62rem; margin-bottom: .5rem;
+      font-size: .62rem;
     }
     .about-table th {
+      position: sticky; top: 0; z-index: 1;
+      background: var(--surface);
       text-align: left; padding: .45rem .8rem;
       font-weight: 500; font-size: .52rem;
       letter-spacing: .1em; text-transform: uppercase;
@@ -981,6 +990,7 @@
         <p class="about-p" style="margin-top:1.2rem;">Wybierz trening żeby zobaczyć historię strat:</p>
         <div id="table-training-selector"></div>
         <div class="about-section-title" id="loss-section-title" style="font-size:.7rem;margin:.5rem 0 .5rem;">Postęp treningu</div>
+        <div class="table-scroll-wrap">
         <table class="about-table">
           <thead>
             <tr><th>Epoka</th><th>loss_D</th><th>loss_G</th><th>adv</th><th>fm</th><th>sd</th><th>Czas</th></tr>
@@ -989,6 +999,7 @@
             <tr><td colspan="7" style="color:var(--muted);font-size:.6rem;letter-spacing:.06em;">Wybierz eksperyment z panelu po lewej</td></tr>
           </tbody>
         </table>
+        </div>
         <p class="about-p" id="slow-epochs-note" style="display:none;">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
         <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — pierwsza epoka z obniżonym LR (ReduceLROnPlateau).</p>
       </div>
