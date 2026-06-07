@@ -428,6 +428,30 @@
     }
     .about-p strong { color: var(--text); font-weight: 500; }
 
+    .test-cta {
+      display: flex; flex-direction: column; align-items: center; gap: .6rem;
+      text-align: center; padding: 2.2rem 1rem; margin-top: 1rem;
+      border: 1px solid var(--border); border-radius: 10px;
+    }
+    .test-cta p {
+      font-size: .68rem; line-height: 1.7; color: var(--muted);
+      max-width: 32rem;
+    }
+    .test-cta a {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .7rem; font-weight: 600; letter-spacing: .08em;
+      text-decoration: none; text-transform: uppercase;
+      padding: .7em 1.6em; border-radius: 6px;
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      transition: all .15s;
+    }
+    .test-cta a:hover {
+      background: color-mix(in srgb, var(--accent) 24%, transparent);
+    }
+
     /* experiment cards */
     .exp-card {
       background: var(--surface); border: 1px solid var(--border);
@@ -862,6 +886,12 @@
           na zbiorze real vs. real+synthetic — bardziej obiektywna miara użyteczności augmentacji
           do zadań downstream (np. klasyfikacja patologii).
         </p>
+      </div>
+
+      <div class="test-cta">
+        <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
+          Weź udział w teście odsłuchowym.</p>
+        <a href="https://github.com/PapaModule/magisterka-hifigan-test-odsluchowy" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
       </div>
 
     </div><!-- /about-wrap -->
