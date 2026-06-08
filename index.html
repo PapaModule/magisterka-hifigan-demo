@@ -18,6 +18,15 @@
       --accent:    #f87171;
     }
 
+    html.light-theme {
+      --bg:        #f4f5f7;
+      --surface:   #ffffff;
+      --surface-2: #eef0f3;
+      --border:    #d8dbe2;
+      --text:      #23262f;
+      --muted:     #6b7280;
+    }
+
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
 
@@ -35,7 +44,7 @@
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(8,10,20,.94);
+      background: color-mix(in srgb, var(--bg) 94%, transparent);
       backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border);
       display: flex;
@@ -92,7 +101,7 @@
       white-space: nowrap;
       flex-shrink: 0;
     }
-    .tab-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .tab-btn:hover { color: var(--text); background: color-mix(in srgb, var(--text) 4%, transparent); }
     .tab-btn.active {
       color: var(--text);
       border-color: var(--border);
@@ -234,9 +243,9 @@
       display: flex; align-items: center; justify-content: center; gap: .35rem;
       flex: 1;
     }
-    .training-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .training-btn:hover { color: var(--text); background: color-mix(in srgb, var(--text) 4%, transparent); }
     .training-btn.active {
-      color: var(--text); background: rgba(255,255,255,.06);
+      color: var(--text); background: color-mix(in srgb, var(--text) 6%, transparent);
       border-color: var(--border);
     }
     .training-btn .t-dot {
@@ -253,6 +262,20 @@
       padding: .3rem 1.2rem;
       display: flex; align-items: center; gap: .35rem;
     }
+    .theme-toggle-btn {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      width: 1.7rem; height: 1.7rem;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: .8rem;
+      margin-right: .8rem;
+      transition: all .15s;
+    }
+    .theme-toggle-btn:hover { color: var(--accent); border-color: var(--accent); }
+
     .epoch-scroll-btn {
       flex-shrink: 0;
       background: none;
@@ -373,7 +396,7 @@
       letter-spacing: .08em; text-transform: uppercase;
       font-weight: 700; flex-shrink: 0;
     }
-    .badge-real { background: rgba(255,255,255,.06); color: var(--muted); }
+    .badge-real { background: color-mix(in srgb, var(--text) 6%, transparent); color: var(--muted); }
     .badge-gen  { color: #0b0d1a; }
     audio { width: 100%; height: 34px; }
 
@@ -394,7 +417,7 @@
       background: none; cursor: pointer; color: var(--muted);
       transition: all .15s; flex: 1;
     }
-    .class-btn:hover { color: var(--text); background: rgba(255,255,255,.04); }
+    .class-btn:hover { color: var(--text); background: color-mix(in srgb, var(--text) 4%, transparent); }
     .class-btn.active {
       color: var(--accent);
       border-color: color-mix(in srgb, var(--accent) 40%, transparent);
@@ -471,7 +494,7 @@
       font-size: .45rem; padding: .15rem .45rem; border-radius: 3px;
       font-weight: 700; letter-spacing: .08em; text-transform: uppercase; flex-shrink: 0;
     }
-    .status-done    { background: rgba(255,255,255,.07); color: var(--muted); }
+    .status-done    { background: color-mix(in srgb, var(--text) 7%, transparent); color: var(--muted); }
     .status-dropped { background: rgba(251,146,60,.12);  color: #fb923c; }
     .status-active  { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
     .exp-body {
@@ -484,7 +507,7 @@
 
     /* website note */
     .website-note {
-      background: rgba(255,255,255,.025);
+      background: color-mix(in srgb, var(--text) 2.5%, transparent);
       border: 1px solid var(--border);
       border-left: 3px solid var(--muted);
       border-radius: 6px;
@@ -523,7 +546,7 @@
     .about-table td.muted  { color: var(--muted); }
     .about-table tr.scheduler-fired td { color: var(--accent); }
     .about-table td.fm-plateau { color: var(--muted); }
-    .about-table tr.total td { border-top: 1px solid rgba(255,255,255,.1); font-weight: 500; }
+    .about-table tr.total td { border-top: 1px solid color-mix(in srgb, var(--text) 10%, transparent); font-weight: 500; }
 
     /* arch grid */
     .arch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -892,7 +915,7 @@
       <div class="test-cta">
         <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
           Weź udział w teście odsłuchowym.</p>
-        <a href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+        <a id="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
       </div>
 
     </div><!-- /about-wrap -->
@@ -1061,6 +1084,7 @@
 let _manifest = null;
 let _currentExp = null;   // aktualny trening w widoku AUDIO (napędza akcent)
 let _tableExp  = null;    // aktualny trening w tabeli (niezależny od AUDIO)
+let _lightTheme = false;  // false = ciemny motyw (domyślny)
 
 const TRAININGS = [
   { key: 'exp4', label: 'Trening 4', color: '#818cf8', info: 'E50 · zakończony' },
@@ -1253,6 +1277,24 @@ function applyAccentColor() {
   document.documentElement.style.setProperty('--accent', expColor());
 }
 
+function updateTestLink() {
+  const link = document.getElementById('test-cta-link');
+  if (!link) return;
+  const file = _lightTheme ? 'test2.html' : 'test1.html';
+  link.href = `https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/${file}`;
+}
+
+function toggleTheme() {
+  _lightTheme = !_lightTheme;
+  document.documentElement.classList.toggle('light-theme', _lightTheme);
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    btn.textContent = _lightTheme ? '☾' : '☀';
+    btn.title = _lightTheme ? 'Przełącz na ciemny motyw' : 'Przełącz na jasny motyw';
+  }
+  updateTestLink();
+}
+
 function renderEpoch(epochNum, data, hasSamples) {
   _currentEpochNum = epochNum;
   const exp = getExp();
@@ -1331,6 +1373,14 @@ function showLatest() {
 function buildNav() {
   const container = document.getElementById('nav-tabs');
   container.innerHTML = '';
+
+  const btnTheme = document.createElement('button');
+  btnTheme.id = 'theme-toggle-btn';
+  btnTheme.className = 'theme-toggle-btn';
+  btnTheme.title = _lightTheme ? 'Przełącz na ciemny motyw' : 'Przełącz na jasny motyw';
+  btnTheme.textContent = _lightTheme ? '☾' : '☀';
+  btnTheme.onclick = () => toggleTheme();
+  container.appendChild(btnTheme);
 
   const btnAbout = document.createElement('button');
   btnAbout.className = 'tab-btn tab-about';
@@ -1572,6 +1622,7 @@ function buildLossHistory() {
 
 async function init() {
   buildNav();
+  updateTestLink();
   showAbout();
 
   try {
