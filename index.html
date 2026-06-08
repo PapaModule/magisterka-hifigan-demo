@@ -1033,7 +1033,7 @@
         </table>
         </div>
         <p class="about-p" id="slow-epochs-note" style="display:none;">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
-        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — pierwsza epoka z obniżonym LR (ReduceLROnPlateau).</p>
+        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — ostatnia epoka plateau, po której scheduler obniżył LR (ReduceLROnPlateau).</p>
       </div>
 
     </div><!-- /about-wrap -->
@@ -1543,7 +1543,7 @@ function buildLossHistory() {
     const timeStr = h > 0 ? `${h}h ${String(m).padStart(2,'0')}m` : `${m}m`;
     const slow = ep <= SLOW_CUTOFF ? ' class="muted"' : '';
     const note = ep <= SLOW_CUTOFF ? ' *' : '';
-    const schedulerClass = SCHEDULER_EPOCHS.map(e => e + 1).includes(ep) ? ' class="scheduler-fired"' : '';
+    const schedulerClass = SCHEDULER_EPOCHS.includes(ep) ? ' class="scheduler-fired"' : '';
     return `<tr${schedulerClass}>
       <td>${ep}</td>
       <td>${d.loss_D}</td><td>${d.loss_G}</td>
