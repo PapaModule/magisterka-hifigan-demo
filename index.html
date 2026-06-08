@@ -521,7 +521,7 @@
     .about-table tr:last-child td { border-bottom: none; }
     .about-table td.accent { color: var(--accent); font-weight: 500; }
     .about-table td.muted  { color: var(--muted); }
-    .about-table tr.scheduler-fired td { color: #e07070; }
+    .about-table tr.scheduler-fired td { color: var(--accent); }
     .about-table td.fm-plateau { color: var(--muted); }
     .about-table tr.total td { border-top: 1px solid rgba(255,255,255,.1); font-weight: 500; }
 
@@ -1034,7 +1034,7 @@
         </table>
         </div>
         <p class="about-p" id="slow-epochs-note" style="display:none;">* Epoki 1–3 wolne z powodu jednorazowej kompilacji shaderów Metal (Apple MPS).</p>
-        <p class="about-p" id="scheduler-note" style="color:#e07070;display:none;">Wiersze wyróżnione kolorem — pierwsza epoka z obniżonym LR (ReduceLROnPlateau). Szare wartości fm — ostatnie 8 epok plateau przed zadziałaniem schedulera.</p>
+        <p class="about-p" id="scheduler-note" style="color:var(--accent);display:none;">Wiersze wyróżnione kolorem — pierwsza epoka z obniżonym LR (ReduceLROnPlateau). Szare wartości fm — ostatnie 8 epok plateau przed zadziałaniem schedulera.</p>
       </div>
 
     </div><!-- /about-wrap -->
