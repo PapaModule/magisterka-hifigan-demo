@@ -1,1 +1,5 @@
 .DS_Store
+.claude/
+docs/
+index_backup_*.html
+index_v2.html
