@@ -1762,23 +1762,23 @@
       "label": "Eksperyment 9 \u2014 filtr LP 600 Hz tylko dla normal",
       "subtitle": "dataset_exp9 \u00b7 LP 600 Hz TYLKO normal \u00b7 LAMBDA_SD=1.0 \u00b7 naprawa mode collapse",
       "status": "training",
-      "latest_epoch": 142,
-      "prev_epoch": 141,
+      "latest_epoch": 143,
+      "prev_epoch": 142,
       "prev_losses": {
-        "loss_D": "1.5556",
-        "loss_G": "38.2205",
-        "adv": "11.5154",
-        "fm": "13.3526",
-        "sd": "0.6353",
-        "time_s": 4691
-      },
-      "latest_losses": {
         "loss_D": "1.5377",
         "loss_G": "38.4704",
         "adv": "11.5569",
         "fm": "13.4567",
         "sd": "0.6393",
         "time_s": 4245
+      },
+      "latest_losses": {
+        "loss_D": "1.5691",
+        "loss_G": "38.3075",
+        "adv": "11.5135",
+        "fm": "13.3970",
+        "sd": "0.6330",
+        "time_s": 4420
       },
       "epochs": {
         "5": {
@@ -3142,6 +3142,14 @@
           "fm": "13.4567",
           "sd": "0.6393",
           "time_s": 4245
+        },
+        "143": {
+          "loss_D": "1.5691",
+          "loss_G": "38.3075",
+          "adv": "11.5135",
+          "fm": "13.3970",
+          "sd": "0.6330",
+          "time_s": 4420
         }
       },
       "scheduler_epochs": [
