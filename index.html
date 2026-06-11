@@ -464,9 +464,9 @@
       border-radius: 10px;
       background: linear-gradient(135deg,
         var(--surface),
-        color-mix(in srgb, var(--accent) 7%, var(--surface)),
+        color-mix(in srgb, var(--accent) 18%, var(--surface)),
         var(--surface-2),
-        color-mix(in srgb, var(--accent) 4%, var(--surface-2)),
+        color-mix(in srgb, var(--accent) 10%, var(--surface-2)),
         var(--surface));
       background-size: 300% 300%;
       animation: cta-gradient 8s ease infinite;
@@ -483,11 +483,17 @@
       padding: .7em 1.6em; border-radius: 6px;
       border: 1.5px solid var(--accent);
       color: var(--accent);
-      background: color-mix(in srgb, var(--accent) 12%, transparent);
-      transition: all .15s;
+      background: linear-gradient(135deg,
+        color-mix(in srgb, var(--accent) 15%, transparent),
+        color-mix(in srgb, var(--accent) 30%, transparent),
+        color-mix(in srgb, var(--accent) 10%, transparent),
+        color-mix(in srgb, var(--accent) 28%, transparent));
+      background-size: 300% 300%;
+      animation: cta-gradient 8s ease infinite;
+      transition: filter .15s;
     }
     .test-cta a:hover {
-      background: color-mix(in srgb, var(--accent) 24%, transparent);
+      filter: brightness(1.15);
     }
     .test-cta-bottom { margin-top: 0; margin-bottom: 1rem; }
 
