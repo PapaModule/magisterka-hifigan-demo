@@ -489,6 +489,7 @@
     .test-cta a:hover {
       background: color-mix(in srgb, var(--accent) 24%, transparent);
     }
+    .test-cta-bottom { margin-top: 0; margin-bottom: 1rem; }
 
     /* experiment cards */
     .exp-card {
@@ -609,7 +610,7 @@
 <div class="test-cta">
   <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
     Weź udział w teście odsłuchowym.</p>
-  <a id="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+  <a id="test-cta-link" class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
 </div>
 
 <!-- ── Header ───────────────────────────────────────────── -->
@@ -934,6 +935,13 @@
       </div>
 
     </div><!-- /about-wrap -->
+
+    <div class="test-cta test-cta-bottom">
+      <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
+        Weź udział w teście odsłuchowym.</p>
+      <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+    </div>
+
     </div><!-- /view-about -->
 
     <!-- Jak działa model ─────────────────────────────── -->
@@ -1076,6 +1084,13 @@
       </div>
 
     </div><!-- /about-wrap -->
+
+    <div class="test-cta test-cta-bottom">
+      <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
+        Weź udział w teście odsłuchowym.</p>
+      <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+    </div>
+
     </div><!-- /view-model -->
 
     <!-- Widok epoki (wypełniany przez JS) -->
@@ -1084,6 +1099,13 @@
       <div class="audio-training-nav" id="audio-training-nav"><!-- wypełniane przez JS --></div>
       <div class="audio-epoch-nav" id="audio-epoch-nav"><!-- wypełniane przez JS --></div>
       <div id="epoch-view"></div>
+
+      <div class="test-cta test-cta-bottom">
+        <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
+          Weź udział w teście odsłuchowym.</p>
+        <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+      </div>
+
     </div><!-- /view-audio -->
 
   </div><!-- /main-area -->
@@ -1293,10 +1315,10 @@ function applyAccentColor() {
 }
 
 function updateTestLink() {
-  const link = document.getElementById('test-cta-link');
-  if (!link) return;
   const file = _lightTheme ? 'test2.html' : 'test1.html';
-  link.href = `https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/${file}`;
+  document.querySelectorAll('.test-cta-link').forEach(a => {
+    a.href = `https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/${file}`;
+  });
 }
 
 function toggleTheme() {
