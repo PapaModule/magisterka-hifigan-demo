@@ -1762,23 +1762,23 @@
       "label": "Eksperyment 9 \u2014 filtr LP 600 Hz tylko dla normal",
       "subtitle": "dataset_exp9 \u00b7 LP 600 Hz TYLKO normal \u00b7 LAMBDA_SD=1.0 \u00b7 naprawa mode collapse",
       "status": "training",
-      "latest_epoch": 189,
-      "prev_epoch": 188,
+      "latest_epoch": 190,
+      "prev_epoch": 189,
       "prev_losses": {
-        "loss_D": "1.5121",
-        "loss_G": "38.4814",
-        "adv": "11.6225",
-        "fm": "13.4294",
-        "sd": "0.6502",
-        "time_s": 4239
-      },
-      "latest_losses": {
         "loss_D": "1.5169",
         "loss_G": "38.4969",
         "adv": "11.6090",
         "fm": "13.4440",
         "sd": "0.6474",
         "time_s": 4784
+      },
+      "latest_losses": {
+        "loss_D": "1.5125",
+        "loss_G": "38.4954",
+        "adv": "11.6154",
+        "fm": "13.4400",
+        "sd": "0.6494",
+        "time_s": 6196
       },
       "epochs": {
         "5": {
@@ -2076,6 +2076,14 @@
           "fm": "13.3939",
           "sd": "0.6463",
           "time_s": 4635
+        },
+        "190": {
+          "loss_D": "1.5125",
+          "loss_G": "38.4954",
+          "adv": "11.6154",
+          "fm": "13.4400",
+          "sd": "0.6494",
+          "time_s": 6196
         }
       },
       "all_epochs": {
@@ -3590,6 +3598,14 @@
           "fm": "13.4440",
           "sd": "0.6474",
           "time_s": 4784
+        },
+        "190": {
+          "loss_D": "1.5125",
+          "loss_G": "38.4954",
+          "adv": "11.6154",
+          "fm": "13.4400",
+          "sd": "0.6494",
+          "time_s": 6196
         }
       },
       "scheduler_epochs": [
