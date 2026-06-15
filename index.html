@@ -584,6 +584,19 @@
     }
     .arch-card strong { color: var(--text); font-weight: 500; }
 
+    /* wyniki testu */
+    .stat-row { display: flex; align-items: center; gap: .5rem; margin-bottom: .45rem; font-size: .6rem; }
+    .stat-label { flex: 0 0 10rem; color: var(--text); }
+    .stat-bar-wrap { flex: 1; height: 3px; background: var(--border); border-radius: 2px; }
+    .stat-bar { height: 100%; border-radius: 2px; opacity: .75; background: var(--accent); }
+    .stat-pct { flex: 0 0 3.2rem; text-align: right; color: var(--muted); }
+    .stat-pct.hi { color: var(--accent); font-weight: 500; }
+    .stat-pct.lo { color: var(--muted); opacity: .7; }
+    .result-lead { font-size: 2rem; font-family: 'Cormorant Garamond', serif; font-weight: 300;
+      color: var(--text); letter-spacing: -.01em; line-height: 1; margin-bottom: .25rem; }
+    .result-lead em { color: var(--accent); font-style: normal; }
+    .result-meta { font-size: .6rem; color: var(--muted); margin-bottom: 1.8rem; }
+
     /* ── Footer ──────────────────────────────────────────── */
     footer {
       text-align: center; padding: 2rem 1rem;
@@ -939,6 +952,149 @@
           do zadań downstream (np. klasyfikacja patologii).
         </p>
       </div>
+
+      <!-- Wyniki testu odsłuchowego -->
+      <div class="about-section">
+        <div class="about-section-title">Wyniki testu odsłuchowego</div>
+        <p class="result-lead"><em>52.6%</em></p>
+        <p class="result-meta">ogólna trafność · 363/690 prób · 23 uczestników · 8–14 czerwca 2026</p>
+        <p class="about-p">
+          Wynik bliski poziomowi losowemu (50%) oznacza, że model skutecznie generuje próbki
+          nieodróżnialne dla przeciętnego słuchacza. Poniżej 55% przy tej liczbie prób
+          jest istotne statystycznie jako dowód jakości syntezy.
+        </p>
+
+        <div class="arch-grid" style="margin-top:1.4rem; margin-bottom:1rem;">
+
+          <div class="arch-card">
+            <div class="arch-card-title">Prawdziwe vs Wygenerowane</div>
+            <div class="stat-row">
+              <span class="stat-label">prawdziwe</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:49%"></span></span>
+              <span class="stat-pct lo">49.0%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">wygenerowane</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.2%"></span></span>
+              <span class="stat-pct">56.2%</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-title">Per klasa nagrania</div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.1%"></span></span>
+              <span class="stat-pct lo">46.1%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.5%"></span></span>
+              <span class="stat-pct">56.5%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:55.2%"></span></span>
+              <span class="stat-pct">55.2%</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-title">Klasa × Pochodzenie</div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole / prawdziwe</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:44.3%"></span></span>
+              <span class="stat-pct lo">44.3%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole / wygener.</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:47.8%"></span></span>
+              <span class="stat-pct lo">47.8%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur / prawdziwe</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.1%"></span></span>
+              <span class="stat-pct lo">46.1%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur / wygener.</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:67%"></span></span>
+              <span class="stat-pct hi">67.0%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal / prawdziwe</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.5%"></span></span>
+              <span class="stat-pct">56.5%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal / wygener.</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.9%"></span></span>
+              <span class="stat-pct">53.9%</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-title">Doświadczenie ze słuchem</div>
+            <div class="stat-row">
+              <span class="stat-label">brak</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:55.4%"></span></span>
+              <span class="stat-pct">55.4%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">amator</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:49.7%"></span></span>
+              <span class="stat-pct lo">49.7%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">zaawansowany</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.3%"></span></span>
+              <span class="stat-pct">53.3%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">profesjonalista</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:63.3%"></span></span>
+              <span class="stat-pct hi">63.3%</span>
+            </div>
+          </div>
+
+        </div><!-- /arch-grid -->
+
+        <div class="arch-card-title" style="margin-bottom:.6rem;">Wyniki per sesja (23 uczestników)</div>
+        <div class="table-scroll-wrap" style="max-height:16rem;">
+          <table class="about-table">
+            <thead><tr>
+              <th>Sesja (UTC)</th><th>Wynik</th><th>Trafność</th>
+            </tr></thead>
+            <tbody>
+              <tr><td>2026-06-08 07:21</td><td>19/30</td><td class="accent">63.3%</td></tr>
+              <tr><td>2026-06-08 07:37</td><td>13/30</td><td class="muted">43.3%</td></tr>
+              <tr><td>2026-06-08 12:24</td><td>18/30</td><td>60.0%</td></tr>
+              <tr><td>2026-06-08 13:48</td><td>15/30</td><td>50.0%</td></tr>
+              <tr><td>2026-06-08 15:13</td><td>13/30</td><td class="muted">43.3%</td></tr>
+              <tr><td>2026-06-09 11:49</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-09 14:57</td><td>20/30</td><td class="accent">66.7%</td></tr>
+              <tr><td>2026-06-09 18:56</td><td>20/30</td><td class="accent">66.7%</td></tr>
+              <tr><td>2026-06-09 21:05</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-10 15:26</td><td>13/30</td><td class="muted">43.3%</td></tr>
+              <tr><td>2026-06-11 10:08</td><td>12/30</td><td class="muted">40.0%</td></tr>
+              <tr><td>2026-06-11 10:11</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-11 10:11</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-11 10:14</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-11 10:19</td><td>13/30</td><td class="muted">43.3%</td></tr>
+              <tr><td>2026-06-11 10:24</td><td>17/30</td><td>56.7%</td></tr>
+              <tr><td>2026-06-11 11:40</td><td>14/30</td><td>46.7%</td></tr>
+              <tr><td>2026-06-11 11:46</td><td>12/30</td><td class="muted">40.0%</td></tr>
+              <tr><td>2026-06-11 17:47</td><td>15/30</td><td>50.0%</td></tr>
+              <tr><td>2026-06-11 20:04</td><td>14/30</td><td>46.7%</td></tr>
+              <tr><td>2026-06-12 15:28</td><td>18/30</td><td>60.0%</td></tr>
+              <tr><td>2026-06-14 14:25</td><td>16/30</td><td>53.3%</td></tr>
+              <tr><td>2026-06-14 15:57</td><td>16/30</td><td>53.3%</td></tr>
+              <tr class="total"><td>Łącznie</td><td>363/690</td><td>52.6%</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div><!-- /Wyniki testu -->
 
     </div><!-- /about-wrap -->
 
