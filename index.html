@@ -1097,6 +1097,53 @@
 
       </div><!-- /Wyniki testu -->
 
+      <!-- Zrealizowany cel i wnioski -->
+      <div class="about-section">
+        <div class="about-section-title">Zrealizowany cel i wnioski</div>
+        <p class="about-lead">
+          <strong>cHiFi-GAN generuje 3-sekundowe dźwięki serca nieodróżnialne od prawdziwych</strong>
+          dla przeciętnego słuchacza — wynik testu odsłuchowego (52.6%) jest statystycznie
+          nieróżny od poziomu losowego (50%).
+        </p>
+
+        <div class="arch-grid-3" style="margin: 1.4rem 0 1rem;">
+          <div class="arch-card">
+            <div class="arch-card-title">Kluczowa innowacja</div>
+            <strong>Selektywny filtr LP 600 Hz</strong> stosowany wyłącznie dla klasy
+            <em>normal</em> wyrównał profile szumu nagraniowego między klasami.
+            Bez tej zmiany model wpadał w mode collapse — generował jedną klasę
+            niezależnie od wejściowej etykiety.
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">Ekstrastole — najlepszy wynik</div>
+            Trafność <strong>46%</strong> (poniżej losowości) mimo zaledwie
+            <strong>64 próbek treningowych</strong>. Wygenerowane extrastole brzmią
+            bardziej przekonująco niż przeciętna próbka ze zbioru — model uogólnił
+            wzorzec klasy, nie zapamiętał danych.
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">Murmur — otwarte pytanie</div>
+            Trafność <strong>67%</strong> dla wygenerowanych szmerów sugeruje, że model
+            nauczył się generować szum nagraniowy charakterystyczny dla tej klasy zamiast
+            samego szmeru turbulentnego. Potwierdzenie wymaga odszumienia datasetu
+            i powtórzenia eksperymentu.
+          </div>
+        </div>
+
+        <p class="about-p">
+          <strong>Doświadczenie medyczne nie poprawia wykrywalności</strong> (lekarze: 50.0%) —
+          synteza operuje w domenie percepcyjnej, nie diagnostycznej.
+          Sprzęt odsłuchowy i wiek uczestników również nie miały istotnego wpływu.
+        </p>
+        <p class="about-p">
+          <strong>Lekcja z 9 eksperymentów:</strong> główną przeszkodą w treningu warunkowego
+          GAN na heterogenicznych nagraniach medycznych był <em>nierówny profil szumu
+          nagraniowego między klasami</em>, nie architektura sieci. Diagnoza problemu
+          (analiza widma, korelacja Pearsona klas) okazała się ważniejsza niż dobór
+          hiperparametrów.
+        </p>
+      </div><!-- /Wnioski -->
+
     </div><!-- /about-wrap -->
 
     <div class="test-cta test-cta-bottom">
