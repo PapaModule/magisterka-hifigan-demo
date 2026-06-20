@@ -959,9 +959,9 @@
         <p class="result-lead"><em>52.6%</em></p>
         <p class="result-meta">ogólna trafność · 363/690 prób · 23 uczestników · 8–14 czerwca 2026</p>
         <p class="about-p">
-          Wynik bliski poziomowi losowemu (50%) oznacza, że model skutecznie generuje próbki
-          nieodróżnialne dla przeciętnego słuchacza. Poniżej 55% przy tej liczbie prób
-          jest istotne statystycznie jako dowód jakości syntezy.
+          Wynik 52.6% <strong>nie różni się istotnie statystycznie od poziomu losowego</strong>
+          (p≈0.17, 95% CI ≈ [49–56%]) — co potwierdza, że model skutecznie dezorientuje
+          laickich słuchaczy. Próbki są nieodróżnialne od prawdziwych nagrań dla przeciętnego słuchacza.
         </p>
 
         <div class="arch-grid" style="margin-top:1.4rem; margin-bottom:1rem;">
@@ -985,7 +985,7 @@
             <div class="stat-row">
               <span class="stat-label">extrastole</span>
               <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.1%"></span></span>
-              <span class="stat-pct lo">46.1%</span>
+              <span class="stat-pct">46.1%</span>
             </div>
             <div class="stat-row">
               <span class="stat-label">murmur</span>
@@ -1059,7 +1059,113 @@
 
         </div><!-- /arch-grid -->
 
-        <div class="arch-card-title" style="margin-bottom:.6rem;">Wyniki per sesja (23 uczestników)</div>
+        <!-- Lekarze — wyniki dodatkowe -->
+        <p class="about-p" style="margin-top:1.6rem; margin-bottom:.9rem;">
+          Po zakończeniu głównej fazy badania troje lekarzy wykonało test niezależnie.
+          Wyniki stanowią dodatkowy punkt odniesienia — kardiolog osiągnął wyraźnie
+          wyższy wynik, pozostali wypadli podobnie do laików.
+        </p>
+        <div class="arch-grid-3" style="margin-bottom:1.6rem;">
+
+          <div class="arch-card">
+            <div class="arch-card-title">Kardiolog <span style="color:var(--accent);font-size:.8em">76.7%</span></div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:70%"></span></span>
+              <span class="stat-pct">70%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
+              <span class="stat-pct hi">80%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
+              <span class="stat-pct hi">80%</span>
+            </div>
+            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
+              <span class="stat-label">prawdziwe →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
+              <span class="stat-pct">60%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">wygener. →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:93.3%"></span></span>
+              <span class="stat-pct hi">93%</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-title">Pediatra <span style="color:var(--muted);font-size:.8em">50.0%</span></div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:40%"></span></span>
+              <span class="stat-pct lo">40%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
+              <span class="stat-pct hi">80%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:30%"></span></span>
+              <span class="stat-pct lo">30%</span>
+            </div>
+            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
+              <span class="stat-label">prawdziwe →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.7%"></span></span>
+              <span class="stat-pct lo">47%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">wygener. →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.3%"></span></span>
+              <span class="stat-pct">53%</span>
+            </div>
+          </div>
+
+          <div class="arch-card">
+            <div class="arch-card-title">Internista <span style="color:var(--muted);font-size:.8em">53.3%</span></div>
+            <div class="stat-row">
+              <span class="stat-label">extrastole</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
+              <span class="stat-pct">60%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">murmur</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
+              <span class="stat-pct">60%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">normal</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:40%"></span></span>
+              <span class="stat-pct lo">40%</span>
+            </div>
+            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
+              <span class="stat-label">prawdziwe →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.7%"></span></span>
+              <span class="stat-pct lo">47%</span>
+            </div>
+            <div class="stat-row">
+              <span class="stat-label">wygener. →</span>
+              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
+              <span class="stat-pct">60%</span>
+            </div>
+          </div>
+
+        </div><!-- /arch-grid-3 lekarze -->
+
+        <p class="about-p">
+          Fachowa wiedza medyczna daje przewagę <strong>tylko przy specjalizacji kardiologicznej</strong>.
+          Kardiolog osiągnął 76.7% — najwyższy wynik w całym zbiorze — jednak jego przewaga pochodzi
+          głównie z wykrywania <em>wygenerowanych</em> próbek (93% skuteczności), nie z rozpoznawania
+          prawdziwych (60%). Oznacza to, że słyszy artefakty modelu, a nie autentyczność tonów.
+          Pediatra i internista wypadli na poziomie laika, co potwierdza, że model skutecznie
+          dezorientuje 25 z 26 uczestników — w tym dwóch lekarzy innych specjalności.
+        </p>
+
+        <div class="arch-card-title" style="margin-bottom:.6rem;">Wyniki per sesja (26 uczestników)</div>
         <div class="table-scroll-wrap" style="max-height:16rem;">
           <table class="about-table">
             <thead><tr>
@@ -1089,7 +1195,10 @@
               <tr><td>2026-06-12 15:28</td><td>18/30</td><td>60.0%</td></tr>
               <tr><td>2026-06-14 14:25</td><td>16/30</td><td>53.3%</td></tr>
               <tr><td>2026-06-14 15:57</td><td>16/30</td><td>53.3%</td></tr>
-              <tr class="total"><td>Łącznie</td><td>363/690</td><td>52.6%</td></tr>
+              <tr style="opacity:.65;font-style:italic"><td>2026-06-15 21:17 · kardiolog</td><td>23/30</td><td class="accent">76.7%</td></tr>
+              <tr style="opacity:.65;font-style:italic"><td>2026-06-15 21:41 · pediatra</td><td>15/30</td><td>50.0%</td></tr>
+              <tr style="opacity:.65;font-style:italic"><td>2026-06-18 11:13 · internista</td><td>16/30</td><td>53.3%</td></tr>
+              <tr class="total"><td>Łącznie (26)</td><td>417/780</td><td>53.5%</td></tr>
             </tbody>
           </table>
         </div>
@@ -1114,11 +1223,11 @@
             niezależnie od wejściowej etykiety.
           </div>
           <div class="arch-card">
-            <div class="arch-card-title">Ekstrastole — najlepszy wynik</div>
-            Trafność <strong>46%</strong> (poniżej losowości) mimo zaledwie
-            <strong>64 próbek treningowych</strong>. Wygenerowane extrastole brzmią
-            bardziej przekonująco niż przeciętna próbka ze zbioru — model uogólnił
-            wzorzec klasy, nie zapamiętał danych.
+            <div class="arch-card-title">Ekstrastole — ograniczenie danych</div>
+            Trafność <strong>46%</strong> (statystycznie na poziomie losowym, p≈0.24)
+            przy zaledwie <strong>64 próbkach treningowych</strong>. Klasa zbyt słabo
+            zasilona, by formułować mocne wnioski — wynik jest pozytywny (brak
+            wykrywalności), lecz wymaga weryfikacji przy pełniejszym zbiorze.
           </div>
           <div class="arch-card">
             <div class="arch-card-title">Murmur — otwarte pytanie</div>
@@ -1130,9 +1239,11 @@
         </div>
 
         <p class="about-p">
-          <strong>Doświadczenie medyczne nie poprawia wykrywalności</strong> (lekarze: 50.0%) —
-          synteza operuje w domenie percepcyjnej, nie diagnostycznej.
-          Sprzęt odsłuchowy i wiek uczestników również nie miały istotnego wpływu.
+          <strong>Kardiolog (76.7%) wykrył artefakty modelu</strong> — ale jego przewaga pochodzi
+          z rozpoznawania <em>wygenerowanych</em> próbek (93%), nie autentyczności prawdziwych (60%).
+          Pediatra (50%) i internista (53%) wypadli na poziomie laika — specjalizacja kardiologiczna,
+          nie samo doświadczenie medyczne, daje percepcyjną przewagę.
+          Sprzęt odsłuchowy i wiek uczestników nie miały istotnego wpływu.
         </p>
         <p class="about-p">
           <strong>Lekcja z 9 eksperymentów:</strong> główną przeszkodą w treningu warunkowego
@@ -1233,28 +1344,25 @@
       </div>
 
       <div class="about-section">
-        <div class="about-section-title">Feature matching — jak mierzymy postęp</div>
+        <div class="about-section-title">Feature matching — składnik straty treningowej</div>
         <p class="about-lead">
-          <strong>fm</strong> to główna miara jakości generatora &mdash; im wyżej, tym bliżej oryginału.
+          <strong>fm</strong> to składnik funkcji straty generatora &mdash; jego wartość bezwzględna nie mierzy bezpośrednio jakości audio.
         </p>
         <p class="about-p">
-          Zamiast pytać tylko "prawdziwy czy fałszywy?", mierzymy jak podobnie dyskryminator <em>reaguje wewnętrznie</em> na prawdziwe i fałszywe nagrania. Jeśli pośrednie warstwy sieci reagują identycznie — generator nauczył się struktury dźwięku, nie tylko powierzchownej imitacji.
+          Zamiast pytać tylko "prawdziwy czy fałszywy?", generator jest karany za to, jak różnie dyskryminator <em>reaguje wewnętrznie</em> na prawdziwe i fałszywe nagrania (odległość L1 cech pośrednich warstw). Mniejsza odległość = generator lepiej naśladuje wewnętrzną reprezentację rzeczywistych próbek. Ponieważ dyskryminator sam ewoluuje w czasie treningu, <strong>wartości fm z różnych epok i eksperymentów nie są porównywalne</strong> — rosną częściowo dlatego że dyskryminator stawia trudniejszy cel, nie tylko dlatego że generator poprawia jakość. Potwierdzenie: Exp6/7 miały wyższe fm od Exp9 przy całkowitym mode collapse.
         </p>
         <table class="about-table">
           <thead>
-            <tr><th>Eksperyment</th><th>Plateau fm</th><th>Epoka</th><th>Kluczowa zmiana</th></tr>
+            <tr><th>Eksperyment</th><th>fm (max)</th><th>Epoka</th><th>Kluczowa zmiana</th></tr>
           </thead>
           <tbody>
             <tr><td>Exp 4</td><td>~12.8</td><td>E35</td><td>pierwsza działająca architektura</td></tr>
-            <tr><td>Exp 5</td><td class="accent">13.68</td><td class="accent">E91</td><td>normalizacja amplitudy RMS &minus;20 dBFS</td></tr>
-            <tr><td>Exp 9</td><td>200</td><td>&mdash;</td><td>selektywny filtr LP tylko dla klasy normal</td></tr>
+            <tr><td>Exp 5</td><td>13.68</td><td>E91</td><td>normalizacja amplitudy RMS &minus;20 dBFS</td></tr>
+            <tr><td>Exp 9</td><td class="accent">13.51</td><td class="accent">E200</td><td>selektywny filtr LP tylko dla klasy normal</td></tr>
           </tbody>
         </table>
         <p class="about-p">
-          Wartości fm nie mają górnego limitu — ważny jest <strong>trend</strong> i <strong>poziom plateau</strong>. Gdy fm przestaje rosnąć przez kilkanaście epok, automatyczny scheduler obniża tempo uczenia o połowę, żeby "wycisnąć" dalszy postęp.
-        </p>
-        <p class="about-p">
-          <strong>Cel końcowy:</strong> test słuchowy — odsetek poprawnych klasyfikacji real/fake przez słuchaczy. Wynik 50% oznacza, że model skutecznie oszukuje ludzi i wygenerowane próbki są nieodróżnialne od prawdziwych nagrań.
+          fm służy przede wszystkim jako sygnał dla schedulera LR — gdy przestaje się zmieniać przez kilkanaście epok, tempo uczenia maleje o połowę. Właściwa ocena jakości syntezy pochodzi z testu odsłuchowego i metryk obiektywnych (korelacja widmowa PSD, regularność rytmu CV-IBI).
         </p>
       </div>
 
@@ -1268,12 +1376,12 @@
             <tr><td><strong>loss_D</strong></td><td>koszt dyskryminatora — jak trudno mu odróżnić real od fake</td><td class="muted">maleje powoli</td></tr>
             <tr><td><strong>loss_G</strong></td><td>łączny koszt generatora — suma sygnałów od wszystkich krytyków</td><td class="muted">rośnie</td></tr>
             <tr><td><strong>adv</strong></td><td>składnik adversarialny — jak skutecznie generator oszukuje dyskryminator</td><td class="muted">rośnie</td></tr>
-            <tr><td class="accent"><strong>fm</strong></td><td>feature matching — główna miara jakości audio generatora</td><td class="accent">rośnie &uarr;</td></tr>
+            <tr><td><strong>fm</strong></td><td>feature matching — składnik straty L_fm; rośnie gdy dyskryminator wyostrza cechy (splątane z jakością)</td><td class="muted">rośnie</td></tr>
             <tr><td><strong>sd</strong></td><td>ocena spektrogramu przez SpectrogramDiscriminator</td><td class="muted">małe, stabilne</td></tr>
           </tbody>
         </table>
         <p class="about-p">
-          Rosnące <strong>loss_G</strong> i <strong>fm</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem.
+          Rosnące <strong>loss_G</strong> przy wolno malejącym <strong>loss_D</strong> to sygnatura zdrowego treningu — dyskryminator uczy się, ale nie dominuje nad generatorem. fm rośnie razem z loss_G jako jej składnik; nie jest samodzielną miarą jakości.
         </p>
         <p class="about-p" style="margin-top:1.2rem;">Wybierz trening żeby zobaczyć historię strat:</p>
         <div id="table-training-selector"></div>
