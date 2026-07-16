@@ -495,6 +495,12 @@
       filter: brightness(1.15);
     }
     .test-cta-bottom { margin-top: 0; margin-bottom: 1rem; }
+    .test-cta-buttons {
+      display: flex; flex-wrap: wrap; gap: .8rem;
+      justify-content: center; align-items: stretch;
+      width: 100%;
+    }
+    .test-cta-buttons a { margin: 0; }
 
     /* experiment cards */
     .exp-card {
@@ -629,7 +635,10 @@
 <div class="test-cta">
   <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
     Weź udział w teście odsłuchowym.</p>
-  <a id="test-cta-link" class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+  <div class="test-cta-buttons">
+    <a id="test-cta-link" class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Test 1 — prawdziwe czy fałszywe?</a>
+    <a class="test-cta-link-new" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test4.html" target="_blank" rel="noopener">Test 2 — porównanie A/B</a>
+  </div>
 </div>
 
 <!-- ── Header ───────────────────────────────────────────── -->
@@ -1259,7 +1268,10 @@
     <div class="test-cta test-cta-bottom">
       <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
         Weź udział w teście odsłuchowym.</p>
-      <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+      <div class="test-cta-buttons">
+        <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Test 1 — prawdziwe czy fałszywe?</a>
+        <a class="test-cta-link-new" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test4.html" target="_blank" rel="noopener">Test 2 — porównanie A/B</a>
+      </div>
     </div>
 
     </div><!-- /view-about -->
@@ -1405,7 +1417,10 @@
     <div class="test-cta test-cta-bottom">
       <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
         Weź udział w teście odsłuchowym.</p>
-      <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+      <div class="test-cta-buttons">
+        <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Test 1 — prawdziwe czy fałszywe?</a>
+        <a class="test-cta-link-new" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test4.html" target="_blank" rel="noopener">Test 2 — porównanie A/B</a>
+      </div>
     </div>
 
     </div><!-- /view-model -->
@@ -1420,7 +1435,10 @@
       <div class="test-cta test-cta-bottom">
         <p>Chcesz sprawdzić, czy odróżnisz prawdziwe dźwięki serca od wygenerowanych przez model?
           Weź udział w teście odsłuchowym.</p>
-        <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Przejdź do testu odsłuchowego</a>
+        <div class="test-cta-buttons">
+          <a class="test-cta-link" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test1.html" target="_blank" rel="noopener">Test 1 — prawdziwe czy fałszywe?</a>
+          <a class="test-cta-link-new" href="https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/test4.html" target="_blank" rel="noopener">Test 2 — porównanie A/B</a>
+        </div>
       </div>
 
     </div><!-- /view-audio -->
@@ -1632,9 +1650,14 @@ function applyAccentColor() {
 }
 
 function updateTestLink() {
-  const file = _lightTheme ? 'test2.html' : 'test1.html';
+  const base = 'https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/';
+  const oldFile = _lightTheme ? 'test2.html' : 'test1.html';
+  const newFile = _lightTheme ? 'test4.html' : 'test3.html';
   document.querySelectorAll('.test-cta-link').forEach(a => {
-    a.href = `https://papamodule.github.io/magisterka-hifigan-test-odsluchowy/${file}`;
+    a.href = base + oldFile;
+  });
+  document.querySelectorAll('.test-cta-link-new').forEach(a => {
+    a.href = base + newFile;
   });
 }
 
