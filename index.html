@@ -723,8 +723,8 @@
         <p class="about-p">
           Model warunkowy (cGAN) pozwala sterować klasą generowanego dźwięku przez embedding etykiety
           konkatenowany z wektorem latentnym i wstrzykiwany do każdej warstwy dyskryminatora.
-          Docelowa miara jakości: <strong>test słuchowy</strong> — odsetek poprawnych klasyfikacji
-          real/fake przez słuchaczy (50% = model oszukuje ludzi).
+          Główna miara: <strong>test odsłuchowy</strong> — jaki odsetek nagrań słuchacze zaklasyfikują
+          poprawnie jako prawdziwe albo wygenerowane. Im bliżej 50%, tym trudniej odróżnić syntezę od oryginału.
         </p>
       </div>
 
@@ -992,7 +992,7 @@
         <p class="about-p">
           <strong>Test słuchowy (metoda podstawowa):</strong> słuchacze (niekoniecznie medycy) odsłuchują
           mieszane próbki bez etykiet i próbują odróżnić prawdziwe od syntetycznych. Miara: procent
-          poprawnych klasyfikacji — wynik 50% oznacza, że model skutecznie oszukuje ludzi.
+          poprawnych klasyfikacji — im bliżej 50%, tym trudniej odróżnić syntezę od oryginału.
         </p>
         <p class="about-p">
           Protokół: anchor (najlepsza prawdziwa + najgorsza syntetyczna jako punkt odniesienia),
@@ -1008,301 +1008,131 @@
       <!-- Wyniki testu odsłuchowego -->
       <div class="about-section">
         <div class="about-section-title">Wyniki testu odsłuchowego</div>
-        <p class="result-lead"><em>52.6%</em></p>
-        <p class="result-meta">ogólna trafność · 363/690 prób · 23 uczestników · 8–14 czerwca 2026</p>
         <p class="about-p">
-          Wynik 52.6% <strong>nie różni się istotnie statystycznie od poziomu losowego</strong>
-          (p≈0.17, 95% CI ≈ [49–56%]) — co potwierdza, że model skutecznie dezorientuje
-          laickich słuchaczy. Próbki są nieodróżnialne od prawdziwych nagrań dla przeciętnego słuchacza.
+          Dwa niezależne testy w ślepej próbie. <strong>Test 1 (real/fake)</strong> — słuchacz ocenia
+          pojedyncze nagranie: prawdziwe czy wygenerowane. <strong>Test 2 (A/B)</strong> — słuchacz dostaje
+          parę prawdziwe + wygenerowane i wskazuje sztuczne. W obu poziom przypadku wynosi 50%.
+        </p>
+
+        <div class="arch-grid-3" style="margin:1.4rem 0 1.2rem;">
+          <div class="arch-card">
+            <div class="arch-card-title">Test 1 — real/fake</div>
+            <p class="result-lead" style="margin:.2rem 0 0;"><em>52,3%</em></p>
+            <p class="result-meta">35 uczestników · 1050 prób · 95% CI 49–55% · p ≈ 0,15</p>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">Test 2 — A/B</div>
+            <p class="result-lead" style="margin:.2rem 0 0;"><em>53,1%</em></p>
+            <p class="result-meta">28 uczestników · 420 prób · 95% CI 48–58% · p ≈ 0,22</p>
+          </div>
+        </div>
+
+        <p class="about-p">
+          Żaden wynik nie różni się istotnie od poziomu losowego. Rezultat bliski 50% odzwierciedla
+          zarówno realizm najlepszych próbek, jak i trudność samego zadania oraz zaszumienie nagrań —
+          nie jest więc samodzielnym dowodem jakości syntezy. Różnice ujawniają się dopiero w podziale
+          na klasy i na doświadczenie osłuchowe słuchaczy.
         </p>
 
         <div class="arch-grid" style="margin-top:1.4rem; margin-bottom:1rem;">
-
           <div class="arch-card">
-            <div class="arch-card-title">Prawdziwe vs Wygenerowane</div>
-            <div class="stat-row">
-              <span class="stat-label">prawdziwe</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:49%"></span></span>
-              <span class="stat-pct lo">49.0%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">wygenerowane</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.2%"></span></span>
-              <span class="stat-pct">56.2%</span>
-            </div>
+            <div class="arch-card-title">Test 1 — trafność per klasa</div>
+            <div class="stat-row"><span class="stat-label">normal</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:52.6%"></span></span><span class="stat-pct">52,6%</span></div>
+            <div class="stat-row"><span class="stat-label">murmur *</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:59.4%"></span></span><span class="stat-pct hi">59,4%</span></div>
+            <div class="stat-row"><span class="stat-label">extrastole</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:44.9%"></span></span><span class="stat-pct lo">44,9%</span></div>
           </div>
-
           <div class="arch-card">
-            <div class="arch-card-title">Per klasa nagrania</div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.1%"></span></span>
-              <span class="stat-pct">46.1%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.5%"></span></span>
-              <span class="stat-pct">56.5%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:55.2%"></span></span>
-              <span class="stat-pct">55.2%</span>
-            </div>
+            <div class="arch-card-title">Test 2 — trafność per klasa</div>
+            <div class="stat-row"><span class="stat-label">normal</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:41.4%"></span></span><span class="stat-pct lo">41,4%</span></div>
+            <div class="stat-row"><span class="stat-label">murmur</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:55.7%"></span></span><span class="stat-pct">55,7%</span></div>
+            <div class="stat-row"><span class="stat-label">extrastole *</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:62.1%"></span></span><span class="stat-pct hi">62,1%</span></div>
           </div>
+        </div>
+        <p class="result-meta" style="margin-top:-.2rem;">* różnica istotna statystycznie względem 50% (p &lt; 0,05); pozostałe klasy — na poziomie przypadku.</p>
 
-          <div class="arch-card">
-            <div class="arch-card-title">Klasa × Pochodzenie</div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole / prawdziwe</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:44.3%"></span></span>
-              <span class="stat-pct lo">44.3%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole / wygener.</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:47.8%"></span></span>
-              <span class="stat-pct lo">47.8%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur / prawdziwe</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.1%"></span></span>
-              <span class="stat-pct lo">46.1%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur / wygener.</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:67%"></span></span>
-              <span class="stat-pct hi">67.0%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal / prawdziwe</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:56.5%"></span></span>
-              <span class="stat-pct">56.5%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal / wygener.</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.9%"></span></span>
-              <span class="stat-pct">53.9%</span>
-            </div>
-          </div>
-
-          <div class="arch-card">
-            <div class="arch-card-title">Doświadczenie ze słuchem</div>
-            <div class="stat-row">
-              <span class="stat-label">brak</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:55.4%"></span></span>
-              <span class="stat-pct">55.4%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">amator</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:49.7%"></span></span>
-              <span class="stat-pct lo">49.7%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">zaawansowany</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.3%"></span></span>
-              <span class="stat-pct">53.3%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">profesjonalista</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:63.3%"></span></span>
-              <span class="stat-pct hi">63.3%</span>
-            </div>
-          </div>
-
-        </div><!-- /arch-grid -->
-
-        <!-- Lekarze — wyniki dodatkowe -->
-        <p class="about-p" style="margin-top:1.6rem; margin-bottom:.9rem;">
-          Po zakończeniu głównej fazy badania troje lekarzy wykonało test niezależnie.
-          Wyniki stanowią dodatkowy punkt odniesienia — kardiolog osiągnął wyraźnie
-          wyższy wynik, pozostali wypadli podobnie do laików.
-        </p>
-        <div class="arch-grid-3" style="margin-bottom:1.6rem;">
-
-          <div class="arch-card">
-            <div class="arch-card-title">Kardiolog <span style="color:var(--accent);font-size:.8em">76.7%</span></div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:70%"></span></span>
-              <span class="stat-pct">70%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
-              <span class="stat-pct hi">80%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
-              <span class="stat-pct hi">80%</span>
-            </div>
-            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
-              <span class="stat-label">prawdziwe →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
-              <span class="stat-pct">60%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">wygener. →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:93.3%"></span></span>
-              <span class="stat-pct hi">93%</span>
-            </div>
-          </div>
-
-          <div class="arch-card">
-            <div class="arch-card-title">Pediatra <span style="color:var(--muted);font-size:.8em">50.0%</span></div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:40%"></span></span>
-              <span class="stat-pct lo">40%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:80%"></span></span>
-              <span class="stat-pct hi">80%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:30%"></span></span>
-              <span class="stat-pct lo">30%</span>
-            </div>
-            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
-              <span class="stat-label">prawdziwe →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.7%"></span></span>
-              <span class="stat-pct lo">47%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">wygener. →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:53.3%"></span></span>
-              <span class="stat-pct">53%</span>
-            </div>
-          </div>
-
-          <div class="arch-card">
-            <div class="arch-card-title">Internista <span style="color:var(--muted);font-size:.8em">53.3%</span></div>
-            <div class="stat-row">
-              <span class="stat-label">extrastole</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
-              <span class="stat-pct">60%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">murmur</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
-              <span class="stat-pct">60%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">normal</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:40%"></span></span>
-              <span class="stat-pct lo">40%</span>
-            </div>
-            <div class="stat-row" style="margin-top:.6rem;border-top:1px solid var(--border);padding-top:.5rem;">
-              <span class="stat-label">prawdziwe →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:46.7%"></span></span>
-              <span class="stat-pct lo">47%</span>
-            </div>
-            <div class="stat-row">
-              <span class="stat-label">wygener. →</span>
-              <span class="stat-bar-wrap"><span class="stat-bar" style="width:60%"></span></span>
-              <span class="stat-pct">60%</span>
-            </div>
-          </div>
-
-        </div><!-- /arch-grid-3 lekarze -->
-
-        <p class="about-p">
-          Fachowa wiedza medyczna daje przewagę <strong>tylko przy specjalizacji kardiologicznej</strong>.
-          Kardiolog osiągnął 76.7% — najwyższy wynik w całym zbiorze — jednak jego przewaga pochodzi
-          głównie z wykrywania <em>wygenerowanych</em> próbek (93% skuteczności), nie z rozpoznawania
-          prawdziwych (60%). Oznacza to, że słyszy artefakty modelu, a nie autentyczność tonów.
-          Pediatra i internista wypadli na poziomie laika, co potwierdza, że model skutecznie
-          dezorientuje 25 z 26 uczestników — w tym dwóch lekarzy innych specjalności.
+        <p class="about-p" style="margin-top:1.6rem;">
+          <strong>Podział na medyków i laików pokazuje, gdzie naprawdę leży różnica.</strong> „Medycy" to
+          osoby osłuchujące serce pacjentów — lekarze, pielęgniarze, studenci medycyny (8 osób w Teście 1,
+          13 w Teście 2). Laicy nie odróżniają próbek w żadnej klasie; medycy wychwytują patologię,
+          ale rytmu prawidłowego — nie.
         </p>
 
-        <div class="arch-card-title" style="margin-bottom:.6rem;">Wyniki per sesja (26 uczestników)</div>
-        <div class="table-scroll-wrap" style="max-height:16rem;">
-          <table class="about-table">
-            <thead><tr>
-              <th>Sesja (UTC)</th><th>Wynik</th><th>Trafność</th>
-            </tr></thead>
-            <tbody>
-              <tr><td>2026-06-08 07:21</td><td>19/30</td><td class="accent">63.3%</td></tr>
-              <tr><td>2026-06-08 07:37</td><td>13/30</td><td class="muted">43.3%</td></tr>
-              <tr><td>2026-06-08 12:24</td><td>18/30</td><td>60.0%</td></tr>
-              <tr><td>2026-06-08 13:48</td><td>15/30</td><td>50.0%</td></tr>
-              <tr><td>2026-06-08 15:13</td><td>13/30</td><td class="muted">43.3%</td></tr>
-              <tr><td>2026-06-09 11:49</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-09 14:57</td><td>20/30</td><td class="accent">66.7%</td></tr>
-              <tr><td>2026-06-09 18:56</td><td>20/30</td><td class="accent">66.7%</td></tr>
-              <tr><td>2026-06-09 21:05</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-10 15:26</td><td>13/30</td><td class="muted">43.3%</td></tr>
-              <tr><td>2026-06-11 10:08</td><td>12/30</td><td class="muted">40.0%</td></tr>
-              <tr><td>2026-06-11 10:11</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-11 10:11</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-11 10:14</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-11 10:19</td><td>13/30</td><td class="muted">43.3%</td></tr>
-              <tr><td>2026-06-11 10:24</td><td>17/30</td><td>56.7%</td></tr>
-              <tr><td>2026-06-11 11:40</td><td>14/30</td><td>46.7%</td></tr>
-              <tr><td>2026-06-11 11:46</td><td>12/30</td><td class="muted">40.0%</td></tr>
-              <tr><td>2026-06-11 17:47</td><td>15/30</td><td>50.0%</td></tr>
-              <tr><td>2026-06-11 20:04</td><td>14/30</td><td>46.7%</td></tr>
-              <tr><td>2026-06-12 15:28</td><td>18/30</td><td>60.0%</td></tr>
-              <tr><td>2026-06-14 14:25</td><td>16/30</td><td>53.3%</td></tr>
-              <tr><td>2026-06-14 15:57</td><td>16/30</td><td>53.3%</td></tr>
-              <tr style="opacity:.65;font-style:italic"><td>2026-06-15 21:17 · kardiolog</td><td>23/30</td><td class="accent">76.7%</td></tr>
-              <tr style="opacity:.65;font-style:italic"><td>2026-06-15 21:41 · pediatra</td><td>15/30</td><td>50.0%</td></tr>
-              <tr style="opacity:.65;font-style:italic"><td>2026-06-18 11:13 · internista</td><td>16/30</td><td>53.3%</td></tr>
-              <tr class="total"><td>Łącznie (26)</td><td>417/780</td><td>53.5%</td></tr>
-            </tbody>
-          </table>
+        <div class="arch-grid" style="margin-bottom:1rem;">
+          <div class="arch-card">
+            <div class="arch-card-title">Test 2 — medycy (13 os.)</div>
+            <div class="stat-row"><span class="stat-label">normal *</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:36.9%"></span></span><span class="stat-pct lo">36,9%</span></div>
+            <div class="stat-row"><span class="stat-label">murmur *</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:64.6%"></span></span><span class="stat-pct hi">64,6%</span></div>
+            <div class="stat-row"><span class="stat-label">extrastole *</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:66.2%"></span></span><span class="stat-pct hi">66,2%</span></div>
+          </div>
+          <div class="arch-card">
+            <div class="arch-card-title">Test 2 — laicy (15 os.)</div>
+            <div class="stat-row"><span class="stat-label">normal</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:45.3%"></span></span><span class="stat-pct">45,3%</span></div>
+            <div class="stat-row"><span class="stat-label">murmur</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:48%"></span></span><span class="stat-pct">48,0%</span></div>
+            <div class="stat-row"><span class="stat-label">extrastole</span><span class="stat-bar-wrap"><span class="stat-bar" style="width:58.7%"></span></span><span class="stat-pct">58,7%</span></div>
+          </div>
         </div>
 
+        <p class="about-p">
+          Najmocniejszy sygnał jest przy rytmie prawidłowym: w teście A/B medycy trafiają „normal" tylko
+          w <strong>36,9%</strong> — istotnie <em>poniżej</em> przypadku, czyli częściej wskazują prawdziwe
+          nagranie jako sztuczne. Wygenerowany rytm zatokowy jest „czystszy", bardziej podręcznikowy niż
+          zaszumiony oryginał. Tę samą grupę zdradza za to patologia: szmer (medycy <strong>70%</strong>
+          w real/fake, p = 0,001) i dodatkowy ton (<strong>66%</strong> w A/B, p = 0,013) niosą słyszalny
+          ślad syntezy.
+        </p>
+        <p class="result-meta">
+          Przedziały ufności metodą Wilsona; istotność dwustronnym testem dwumianowym względem 50%.
+          Grupy medyków niewielkie (8 i 13 osób) — wyniki istotne traktujemy eksploracyjnie, bez korekty
+          na wielokrotne porównania.
+        </p>
       </div><!-- /Wyniki testu -->
 
-      <!-- Zrealizowany cel i wnioski -->
+      <!-- Wnioski -->
       <div class="about-section">
-        <div class="about-section-title">Zrealizowany cel i wnioski</div>
+        <div class="about-section-title">Wnioski</div>
         <p class="about-lead">
-          <strong>cHiFi-GAN generuje 3-sekundowe dźwięki serca nieodróżnialne od prawdziwych</strong>
-          dla przeciętnego słuchacza — wynik testu odsłuchowego (52.6%) jest statystycznie
-          nieróżny od poziomu losowego (50%).
+          W ślepym teście odsłuchowym słuchacze nie odróżniają wygenerowanych dźwięków serca od
+          prawdziwych powyżej poziomu przypadku (52–53%, różnica statystycznie nieistotna). Różnicę
+          słychać dopiero w klasach patologicznych i dopiero u osób z doświadczeniem osłuchowym.
         </p>
 
         <div class="arch-grid-3" style="margin: 1.4rem 0 1rem;">
           <div class="arch-card">
-            <div class="arch-card-title">Kluczowa innowacja</div>
-            <strong>Selektywny filtr LP 600 Hz</strong> stosowany wyłącznie dla klasy
-            <em>normal</em> wyrównał profile szumu nagraniowego między klasami.
-            Bez tej zmiany model wpadał w mode collapse — generował jedną klasę
-            niezależnie od wejściowej etykiety.
+            <div class="arch-card-title">Rozwiązanie mode collapse</div>
+            <strong>Selektywny filtr LP 600 Hz</strong> zastosowany wyłącznie dla klasy
+            <em>normal</em> wyrównał profile szumu nagraniowego między klasami. Bez tej zmiany model
+            wpadał w mode collapse — generował jedną klasę niezależnie od wejściowej etykiety.
           </div>
           <div class="arch-card">
-            <div class="arch-card-title">Ekstrastole — ograniczenie danych</div>
-            Trafność <strong>46%</strong> (statystycznie na poziomie losowym, p≈0.24)
-            przy zaledwie <strong>64 próbkach treningowych</strong>. Klasa zbyt słabo
-            zasilona, by formułować mocne wnioski — wynik jest pozytywny (brak
-            wykrywalności), lecz wymaga weryfikacji przy pełniejszym zbiorze.
+            <div class="arch-card-title">Rytm prawidłowy — realizm</div>
+            Klasa <em>normal</em> pozostaje nieodróżnialna nawet dla medyków (w teście A/B wskazują ją
+            <strong>poniżej</strong> przypadku). To najsilniejsza przesłanka, że synteza rytmu
+            zatokowego jest przekonująca.
           </div>
           <div class="arch-card">
-            <div class="arch-card-title">Murmur — otwarte pytanie</div>
-            Trafność <strong>67%</strong> dla wygenerowanych szmerów sugeruje, że model
-            nauczył się generować szum nagraniowy charakterystyczny dla tej klasy zamiast
-            samego szmeru turbulentnego. Potwierdzenie wymaga odszumienia datasetu
-            i powtórzenia eksperymentu.
+            <div class="arch-card-title">Patologia — słyszalny ślad</div>
+            Szmer i dodatkowy ton są wychwytywane powyżej przypadku, zwłaszcza przez medyków. Model
+            prawdopodobnie odwzorowuje też charakterystyczny <em>szum nagraniowy</em> tych klas, nie
+            samą patologię — weryfikacja wymaga odszumienia datasetu i powtórzenia treningu.
           </div>
         </div>
 
         <p class="about-p">
-          <strong>Kardiolog (76.7%) wykrył artefakty modelu</strong> — ale jego przewaga pochodzi
-          z rozpoznawania <em>wygenerowanych</em> próbek (93%), nie autentyczności prawdziwych (60%).
-          Pediatra (50%) i internista (53%) wypadli na poziomie laika — specjalizacja kardiologiczna,
-          nie samo doświadczenie medyczne, daje percepcyjną przewagę.
-          Sprzęt odsłuchowy i wiek uczestników nie miały istotnego wpływu.
+          <strong>Doświadczenie osłuchowe daje przewagę tylko w klasach patologicznych.</strong>
+          Medycy wykrywają szmer i dodatkowy ton istotnie powyżej przypadku, podczas gdy laicy
+          pozostają na poziomie losowym we wszystkich klasach. Przy rytmie prawidłowym przewaga znika,
+          a w teście A/B wręcz się odwraca — najlepsze próbki „normal" mylą także klinicystów.
         </p>
         <p class="about-p">
-          <strong>Lekcja z 9 eksperymentów:</strong> główną przeszkodą w treningu warunkowego
-          GAN na heterogenicznych nagraniach medycznych był <em>nierówny profil szumu
-          nagraniowego między klasami</em>, nie architektura sieci. Diagnoza problemu
-          (analiza widma, korelacja Pearsona klas) okazała się ważniejsza niż dobór
-          hiperparametrów.
+          <strong>Ograniczenie — extrastole.</strong> Klasa ma zaledwie <strong>64 próbki treningowe</strong>,
+          a do testu zebrano jej mody z różnych epok (są szumniejsze od prawdziwych). Wynik 62% w A/B
+          traktujemy więc jako sygnał ograniczeń danych, nie jako miarę jakości tej klasy.
+        </p>
+        <p class="about-p">
+          <strong>Lekcja z 9 eksperymentów:</strong> główną przeszkodą w treningu warunkowego GAN na
+          heterogenicznych nagraniach medycznych był <em>nierówny profil szumu nagraniowego między
+          klasami</em>, nie architektura sieci. Diagnoza problemu (analiza widma, korelacja Pearsona
+          klas) okazała się ważniejsza niż dobór hiperparametrów.
         </p>
       </div><!-- /Wnioski -->
 
